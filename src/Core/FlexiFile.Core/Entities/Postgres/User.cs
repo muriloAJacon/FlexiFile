@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlexiFile.Core.Entities.Postgres;
 
-[Table("User", Schema = "FormatFlex")]
+[Table("User", Schema = "FlexiFile")]
 public partial class User
 {
     [Key]

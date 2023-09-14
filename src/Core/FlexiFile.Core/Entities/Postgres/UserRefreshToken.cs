@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlexiFile.Core.Entities.Postgres;
 
-[Table("UserRefreshToken", Schema = "FormatFlex")]
+[Table("UserRefreshToken", Schema = "FlexiFile")]
 public partial class UserRefreshToken
 {
     [Key]

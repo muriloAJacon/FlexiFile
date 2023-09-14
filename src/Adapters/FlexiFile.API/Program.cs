@@ -1,3 +1,5 @@
+using FlexiFile.API.Configurations;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,8 +8,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddPostgres(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
+
+app.UseMigrations();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
