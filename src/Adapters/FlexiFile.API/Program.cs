@@ -21,6 +21,8 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
+builder.Services.AddBearerAuthentication(builder.Configuration);
+
 builder.Services.ConfigureCors(builder.Configuration);
 
 builder.Services.AddControllers(ExtensionOptions.ConfigureControllers)
@@ -67,6 +69,8 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseCors();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
