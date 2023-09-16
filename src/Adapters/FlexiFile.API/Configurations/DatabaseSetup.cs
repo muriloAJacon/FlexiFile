@@ -1,4 +1,6 @@
-﻿using FlexiFile.Infrastructure.Context;
+﻿using FlexiFile.Core.Interfaces.Repository;
+using FlexiFile.Infrastructure.Context;
+using FlexiFile.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlexiFile.API.Configurations {
@@ -8,6 +10,12 @@ namespace FlexiFile.API.Configurations {
 				options.UseNpgsql(configuration.GetConnectionString("Postgres"), x => x.MigrationsAssembly("FlexiFile.API"));
 				options.EnableSensitiveDataLogging(env.IsDevelopment());
 			});
+		}
+
+		public static IServiceCollection AddRepositories(this IServiceCollection services) {
+			services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+			return services;
 		}
 
 		public static void UseMigrations(this WebApplication app) {

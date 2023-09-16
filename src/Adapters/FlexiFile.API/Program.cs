@@ -42,6 +42,8 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddPostgres(builder.Configuration, builder.Environment);
 
+builder.Services.AddRepositories();
+
 builder.Services.AddValidatorsFromAssembly(AppDomain.CurrentDomain.Load("FlexiFile.Application"));
 
 builder.Services.AddFluentValidationAutoValidation();
