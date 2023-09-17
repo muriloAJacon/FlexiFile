@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FlexiFile.API.Migrations
 {
     [DbContext(typeof(PostgresContext))]
-    [Migration("20230914021651_InitialCreate")]
+    [Migration("20230917023540_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -36,7 +36,7 @@ namespace FlexiFile.API.Migrations
                         .HasColumnName("finished_upload");
 
                     b.Property<DateTime?>("FinishedUploadAt")
-                        .HasColumnType("timestamp(3) without time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("finished_upload_at");
 
                     b.Property<string>("OriginalName")
@@ -53,7 +53,7 @@ namespace FlexiFile.API.Migrations
                         .HasColumnName("size");
 
                     b.Property<DateTime>("SubmittedAt")
-                        .HasColumnType("timestamp(3) without time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("submitted_at");
 
                     b.Property<int>("TypeId")
@@ -77,7 +77,7 @@ namespace FlexiFile.API.Migrations
                         .HasColumnName("id");
 
                     b.Property<DateTime>("CreationDate")
-                        .HasColumnType("timestamp(3) without time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("creation_date");
 
                     b.Property<string>("ExtraInfo")
@@ -93,7 +93,7 @@ namespace FlexiFile.API.Migrations
                         .HasColumnName("file_type_conversion_id");
 
                     b.Property<DateTime>("LastUpdateDate")
-                        .HasColumnType("timestamp(3) without time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("last_update_date");
 
                     b.Property<double>("PercentageComplete")
@@ -122,7 +122,7 @@ namespace FlexiFile.API.Migrations
                         .HasColumnName("id");
 
                     b.Property<DateTime>("CreationDate")
-                        .HasColumnType("timestamp(3) without time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("creation_date");
 
                     b.Property<Guid>("FileConversionId")
@@ -219,7 +219,7 @@ namespace FlexiFile.API.Migrations
                         .HasColumnName("id");
 
                     b.Property<DateTime?>("LastUpdateDate")
-                        .HasColumnType("timestamp(3) without time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("last_update_date");
 
                     b.Property<Guid?>("UpdatedByUserId")
@@ -254,7 +254,7 @@ namespace FlexiFile.API.Migrations
                         .HasColumnName("approved");
 
                     b.Property<DateTime?>("ApprovedAt")
-                        .HasColumnType("timestamp(3) without time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("approved_at");
 
                     b.Property<Guid?>("ApprovedByUserId")
@@ -266,7 +266,7 @@ namespace FlexiFile.API.Migrations
                         .HasColumnName("created_by_user_id");
 
                     b.Property<DateTime>("CreationDate")
-                        .HasColumnType("timestamp(3) without time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("creation_date");
 
                     b.Property<string>("Email")
@@ -275,7 +275,7 @@ namespace FlexiFile.API.Migrations
                         .HasColumnName("email");
 
                     b.Property<DateTime>("LastUpdateDate")
-                        .HasColumnType("timestamp(3) without time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("last_update_date");
 
                     b.Property<string>("Name")
@@ -323,7 +323,7 @@ namespace FlexiFile.API.Migrations
                         .HasColumnName("successful");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("timestamp(3) without time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("timestamp");
 
                     b.Property<Guid>("UserId")
@@ -345,11 +345,11 @@ namespace FlexiFile.API.Migrations
                         .HasColumnName("id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp(3) without time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("timestamp(3) without time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("expires_at");
 
                     b.Property<Guid>("UserId")

@@ -41,11 +41,11 @@ namespace FlexiFile.API.Migrations
                     password = table.Column<string>(type: "character varying", nullable: false),
                     access_level = table.Column<int>(type: "integer", nullable: false),
                     approved = table.Column<bool>(type: "boolean", nullable: false),
-                    approved_at = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: true),
+                    approved_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     approved_by_user_id = table.Column<Guid>(type: "uuid", nullable: true),
-                    creation_date = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: false),
+                    creation_date = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: true),
-                    last_update_date = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: false),
+                    last_update_date = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false),
                     storage_limit = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
@@ -106,9 +106,9 @@ namespace FlexiFile.API.Migrations
                     owned_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     size = table.Column<long>(type: "bigint", nullable: false),
                     original_name = table.Column<string>(type: "character varying", nullable: false),
-                    submitted_at = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: false),
+                    submitted_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false),
                     finished_upload = table.Column<bool>(type: "boolean", nullable: false),
-                    finished_upload_at = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: true)
+                    finished_upload_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -134,7 +134,7 @@ namespace FlexiFile.API.Migrations
                 {
                     id = table.Column<string>(type: "character varying", nullable: false),
                     value = table.Column<string>(type: "character varying", nullable: false),
-                    last_update_date = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: true),
+                    last_update_date = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     updated_by_user_id = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
@@ -158,7 +158,7 @@ namespace FlexiFile.API.Migrations
                     successful = table.Column<bool>(type: "boolean", nullable: false),
                     source_ip = table.Column<string>(type: "character varying", nullable: false),
                     source_user_agent = table.Column<string>(type: "character varying", nullable: false),
-                    timestamp = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: false)
+                    timestamp = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -178,8 +178,8 @@ namespace FlexiFile.API.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: false),
-                    expires_at = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: false)
+                    created_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false),
+                    expires_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -202,8 +202,8 @@ namespace FlexiFile.API.Migrations
                     file_type_conversion_id = table.Column<int>(type: "integer", nullable: false),
                     status = table.Column<int>(type: "integer", nullable: false, comment: "(\"InQueue\",\"InProgress\",\"Completed\",\"Failed\")"),
                     percentage_complete = table.Column<double>(type: "double precision", nullable: false),
-                    creation_date = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: false),
-                    last_update_date = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: false),
+                    creation_date = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false),
+                    last_update_date = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false),
                     extra_info = table.Column<string>(type: "json", nullable: true)
                 },
                 constraints: table =>
@@ -230,7 +230,7 @@ namespace FlexiFile.API.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     file_conversion_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    creation_date = table.Column<DateTime>(type: "timestamp(3) without time zone", nullable: false),
+                    creation_date = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false),
                     order = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>

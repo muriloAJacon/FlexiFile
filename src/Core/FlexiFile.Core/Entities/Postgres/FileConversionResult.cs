@@ -16,7 +16,7 @@ public partial class FileConversionResult
     [Column("file_conversion_id")]
     public Guid FileConversionId { get; set; }
 
-    [Column("creation_date", TypeName = "timestamp(3) without time zone")]
+    [Column("creation_date", TypeName = "timestamp(3) with time zone")]
     public DateTime CreationDate { get; set; }
 
     [Column("order")]

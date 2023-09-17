@@ -25,7 +25,7 @@ public partial class UserLoginAudit
     [Column("source_user_agent", TypeName = "character varying")]
     public string SourceUserAgent { get; set; } = null!;
 
-    [Column("timestamp", TypeName = "timestamp(3) without time zone")]
+    [Column("timestamp", TypeName = "timestamp(3) with time zone")]
     public DateTime Timestamp { get; set; }
 
     [ForeignKey("UserId")]

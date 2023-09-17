@@ -16,10 +16,10 @@ public partial class UserRefreshToken
     [Column("user_id")]
     public Guid UserId { get; set; }
 
-    [Column("created_at", TypeName = "timestamp(3) without time zone")]
+    [Column("created_at", TypeName = "timestamp(3) with time zone")]
     public DateTime CreatedAt { get; set; }
 
-    [Column("expires_at", TypeName = "timestamp(3) without time zone")]
+    [Column("expires_at", TypeName = "timestamp(3) with time zone")]
     public DateTime ExpiresAt { get; set; }
 
     [ForeignKey("UserId")]

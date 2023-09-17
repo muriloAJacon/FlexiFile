@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using FlexiFile.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlexiFile.Core.Entities.Postgres;
@@ -23,24 +24,24 @@ public partial class User
     public string Password { get; set; } = null!;
 
     [Column("access_level")]
-    public int AccessLevel { get; set; }
+    public AccessLevel AccessLevel { get; set; }
 
     [Column("approved")]
     public bool Approved { get; set; }
 
-    [Column("approved_at", TypeName = "timestamp(3) without time zone")]
+    [Column("approved_at", TypeName = "timestamp(3) with time zone")]
     public DateTime? ApprovedAt { get; set; }
 
     [Column("approved_by_user_id")]
     public Guid? ApprovedByUserId { get; set; }
 
-    [Column("creation_date", TypeName = "timestamp(3) without time zone")]
+    [Column("creation_date", TypeName = "timestamp(3) with time zone")]
     public DateTime CreationDate { get; set; }
 
     [Column("created_by_user_id")]
     public Guid? CreatedByUserId { get; set; }
 
-    [Column("last_update_date", TypeName = "timestamp(3) without time zone")]
+    [Column("last_update_date", TypeName = "timestamp(3) with time zone")]
     public DateTime LastUpdateDate { get; set; }
 
     [Column("storage_limit")]
