@@ -21,6 +21,7 @@ namespace FlexiFile.Application.Commands.UserCommands.CreateFirstSetup {
 			}
 
 			var user = new User {
+				Id = Guid.NewGuid(),
 				Name = request.Name,
 				Email = request.Email,
 				Password = PasswordService.HashPassword(request.Password),
