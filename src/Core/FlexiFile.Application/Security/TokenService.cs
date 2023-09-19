@@ -1,4 +1,5 @@
-﻿using FlexiFile.Core.Entities.Postgres;
+﻿using FlexiFile.Application.ViewModels;
+using FlexiFile.Core.Entities.Postgres;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -7,10 +8,9 @@ using System.Text.Json;
 
 namespace FlexiFile.Application.Security {
 	public static class TokenService {
-		public static string GenerateToken(User user, SigningConfigurations signingConfigurations, TokenConfigurations tokenConfigurations) {
+		public static BearerTokenViewModel GenerateToken(User user, SigningConfigurations signingConfigurations, TokenConfigurations tokenConfigurations) {
 			DateTime creationDate = DateTime.UtcNow;
-			DateTime expirationDate = creationDate + TimeSpan.FromSeconds(tokenConfigurations.Seconds);
-			TimeSpan finalExpiration = TimeSpan.FromSeconds(tokenConfigurations.FinalExpiration);
+			DateTime expirationDate = creationDate.AddSeconds(tokenConfigurations.Seconds);
 
 			JwtSecurityTokenHandler tokenHandler = new();
 			SecurityTokenDescriptor tokenDescriptor = new() {
@@ -31,7 +31,11 @@ namespace FlexiFile.Application.Security {
 			SecurityToken createToken = tokenHandler.CreateToken(tokenDescriptor);
 			string token = tokenHandler.WriteToken(createToken);
 
-			return token;
+			return new BearerTokenViewModel {
+				ExpiresAt = expirationDate,
+				RefreshToken = Guid.NewGuid(),
+				Token = token
+			};
 		}
 	}
 }

@@ -9,5 +9,7 @@ namespace FlexiFile.Infrastructure.Repository {
 		}
 
 		public async Task<bool> AnyAsync() => await Context.Users.AnyAsync();
+
+		public async Task<User?> GetByEmailAsync(string email) => await Context.Users.FirstOrDefaultAsync(x => x.Email == email);
 	}
 }
