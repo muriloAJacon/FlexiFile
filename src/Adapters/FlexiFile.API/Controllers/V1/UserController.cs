@@ -1,4 +1,5 @@
 ﻿using FlexiFile.Application.Commands.UserCommands.CreateFirstSetup;
+using FlexiFile.Application.Commands.UserCommands.CreateUser;
 using FlexiFile.Application.Commands.UserCommands.GetFirstSetup;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -23,5 +24,9 @@ namespace FlexiFile.API.Controllers.V1 {
 		[HttpGet("firstSetup")]
 		[AllowAnonymous]
 		public async Task<IActionResult> GetFirstSetup() => await _mediator.Send(new GetFirstSetupCommand());
+
+		[HttpPost]
+		[AllowAnonymous]
+		public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command) => await _mediator.Send(command);
 	}
 }
