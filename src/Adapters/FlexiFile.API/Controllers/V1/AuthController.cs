@@ -7,6 +7,7 @@ using System.Net;
 
 namespace FlexiFile.API.Controllers.V1 {
 	[Route("api/v{version:apiVersion}/[controller]")]
+	[ApiVersion("1.0")]
 	[ApiController]
 	public class AuthController : ControllerBase {
 		private readonly IMediator _mediator;
