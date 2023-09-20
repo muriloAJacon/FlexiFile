@@ -28,10 +28,10 @@ public partial class FileConversion
     [Column("percentage_complete")]
     public double PercentageComplete { get; set; }
 
-    [Column("creation_date", TypeName = "timestamp(3) without time zone")]
+    [Column("creation_date", TypeName = "timestamp(3) with time zone")]
     public DateTime CreationDate { get; set; }
 
-    [Column("last_update_date", TypeName = "timestamp(3) without time zone")]
+    [Column("last_update_date", TypeName = "timestamp(3) with time zone")]
     public DateTime LastUpdateDate { get; set; }
 
     [Column("extra_info", TypeName = "json")]

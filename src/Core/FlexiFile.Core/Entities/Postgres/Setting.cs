@@ -16,7 +16,7 @@ public partial class Setting
     [Column("value", TypeName = "character varying")]
     public string Value { get; set; } = null!;
 
-    [Column("last_update_date", TypeName = "timestamp(3) without time zone")]
+    [Column("last_update_date", TypeName = "timestamp(3) with time zone")]
     public DateTime? LastUpdateDate { get; set; }
 
     [Column("updated_by_user_id")]

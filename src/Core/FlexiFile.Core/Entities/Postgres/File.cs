@@ -25,13 +25,13 @@ public partial class File
     [Column("original_name", TypeName = "character varying")]
     public string OriginalName { get; set; } = null!;
 
-    [Column("submitted_at", TypeName = "timestamp(3) without time zone")]
+    [Column("submitted_at", TypeName = "timestamp(3) with time zone")]
     public DateTime SubmittedAt { get; set; }
 
     [Column("finished_upload")]
     public bool FinishedUpload { get; set; }
 
-    [Column("finished_upload_at", TypeName = "timestamp(3) without time zone")]
+    [Column("finished_upload_at", TypeName = "timestamp(3) with time zone")]
     public DateTime? FinishedUploadAt { get; set; }
 
     [InverseProperty("File")]

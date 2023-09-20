@@ -57,6 +57,8 @@ builder.Services.AddFluentValidationRulesToSwagger();
 builder.Services.AddMediatR(ExtensionOptions.ConfigureMediatR)
 				.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviorFilter<,>));
 
+builder.Services.AddDependencyInjection();
+
 
 var app = builder.Build();
 
