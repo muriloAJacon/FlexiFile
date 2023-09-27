@@ -1,4 +1,5 @@
 ﻿using FlexiFile.Application.Results;
+using FlexiFile.Application.ViewModels.UserViewModels;
 using FlexiFile.Core.Entities.Postgres;
 using FlexiFile.Core.Enums;
 using FlexiFile.Core.Interfaces.Repository;
@@ -52,7 +53,7 @@ namespace FlexiFile.Application.Commands.UserCommands.CreateUser {
 			_unitOfWork.UserRepository.Add(user);
 			await _unitOfWork.Commit();
 
-			return ResultCommand.NoContent();
+			return ResultCommand.Ok<User, UserViewModel>(user);
 		}
 	}
 }
