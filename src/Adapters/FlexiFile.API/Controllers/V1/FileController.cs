@@ -1,4 +1,5 @@
-﻿using FlexiFile.Application.Commands.FileCommands.FileUpload;
+﻿using FlexiFile.Application.Commands.ConvertCommands.RequestConvertCommand;
+using FlexiFile.Application.Commands.FileCommands.FileUpload;
 using FlexiFile.Application.Commands.FileCommands.StartFileUpload;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -35,5 +36,11 @@ namespace FlexiFile.API.Controllers.V1 {
 			};
 			return await _mediator.Send(command);
 		}
+
+		[HttpPost("convert")]
+		[ProducesResponseType((int)HttpStatusCode.Created)]
+		[ProducesResponseType((int)HttpStatusCode.BadRequest)]
+		[ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+		public async Task<IActionResult> Convert([FromBody] RequestConvertCommand command) => await _mediator.Send(command);
 	}
 }

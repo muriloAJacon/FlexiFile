@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using FlexiFile.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlexiFile.Core.Entities.Postgres;
@@ -19,11 +20,8 @@ public partial class FileConversion
     [Column("file_type_conversion_id")]
     public int FileTypeConversionId { get; set; }
 
-    /// <summary>
-    /// (&quot;InQueue&quot;,&quot;InProgress&quot;,&quot;Completed&quot;,&quot;Failed&quot;)
-    /// </summary>
     [Column("status")]
-    public int Status { get; set; }
+    public ConvertStatus Status { get; set; }
 
     [Column("percentage_complete")]
     public double PercentageComplete { get; set; }
