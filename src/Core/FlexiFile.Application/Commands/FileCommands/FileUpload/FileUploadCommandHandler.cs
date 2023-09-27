@@ -12,12 +12,12 @@ using Microsoft.AspNetCore.Http;
 using File = FlexiFile.Core.Entities.Postgres.File;
 
 namespace FlexiFile.Application.Commands.FileCommands.FileUpload {
-	public class FileUploadHandler : IRequestHandler<FileUploadCommand, IResultCommand> {
+	public class FileUploadCommandHandler : IRequestHandler<FileUploadCommand, IResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IUserClaimsService _userClaimsService;
 		private readonly IFileService _fileService;
 
-		public FileUploadHandler(IUnitOfWork unitOfWork, IUserClaimsService userClaimsService, IFileService fileService) {
+		public FileUploadCommandHandler(IUnitOfWork unitOfWork, IUserClaimsService userClaimsService, IFileService fileService) {
 			_unitOfWork = unitOfWork;
 			_userClaimsService = userClaimsService;
 			_fileService = fileService;
