@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileContext>..\..</DockerfileContext>
+	  <UserSecretsId>f0bda1ec-040a-49d5-8d3b-67fc23c5e5f8</UserSecretsId>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Core\FlexiFile.Application\FlexiFile.Application.csproj" />
+		<ProjectReference Include="..\..\Core\FlexiFile.Core\FlexiFile.Core.csproj" />
+		<ProjectReference Include="..\..\Core\FlexiFile.Infrastructure\FlexiFile.Infrastructure.csproj" />
+	</ItemGroup>
+
+</Project>

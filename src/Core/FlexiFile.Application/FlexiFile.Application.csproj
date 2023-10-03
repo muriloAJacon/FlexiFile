@@ -22,8 +22,4 @@
 		<ProjectReference Include="..\FlexiFile.Infrastructure\FlexiFile.Infrastructure.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="CommandHandlers\UserCommands\" />
-	</ItemGroup>
-
 </Project>
