@@ -1,7 +1,7 @@
 using Autofac.Extensions.DependencyInjection;
+using FlexiFile.Application.Hubs;
 using FlexiFile.Worker.Configurations;
 using FlexiFile.Worker.Filters;
-using FlexiFile.Worker.Hubs;
 using FlexiFile.Worker.Options;
 using MediatR;
 
@@ -18,7 +18,8 @@ builder.Services.AddRepositories();
 builder.Services.AddMediatR(ExtensionOptions.ConfigureMediatR)
 				.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviorFilter<,>));
 
-builder.Services.AddSignalR();
+
+builder.Services.AddSignalR().AddJsonProtocol(ExtensionOptions.ConfigureJson);
 
 builder.Services.AddDependencyInjection();
 

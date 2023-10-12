@@ -1,10 +1,20 @@
 ﻿using FlexiFile.Core.Entities.Postgres;
+using FlexiFile.Core.Events;
 using FlexiFile.Core.Interfaces.Services.ConvertServices;
 using ImageMagick;
+using Microsoft.Extensions.Logging;
+using System.Threading.Channels;
+using static FlexiFile.Core.Interfaces.Services.ConvertServices.IConvertFileService;
 
 namespace FlexiFile.Infrastructure.Services.ConvertServices {
 	public class ConvertImageService : IConvertImageService {
-		public async Task ConvertFile(string fileDirectory, FileType inputFileType, FileType outputFileType) {
+		private readonly ILogger<ConvertImageService> _logger;
+
+		public ConvertImageService(ILogger<ConvertImageService> logger) {
+			_logger = logger;
+		}
+
+		public async Task ConvertFile(ChannelWriter<ConvertProgressNotificationEvent> notificationChannelWriter, Core.Entities.Postgres.File file, string fileDirectory, FileType inputFileType, FileType outputFileType) {
 			try {
 				var directory = new DirectoryInfo(fileDirectory);
 
@@ -30,8 +40,21 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 				}
 
 				await image.WriteAsync(outputPath, format);
-			} catch (Exception e) {
-				Console.WriteLine(e);
+
+				var @event = new ConvertProgressNotificationEvent {
+					ConvertStatus = Core.Enums.ConvertStatus.Completed,
+					PercentageComplete = 100
+				};
+
+				await notificationChannelWriter.WriteAsync(@event);
+			} catch (Exception ex) {
+				_logger.LogError(ex, "Failed to convert file");
+
+				var @event = new ConvertProgressNotificationEvent {
+					ConvertStatus = Core.Enums.ConvertStatus.Failed,
+				};
+
+				await notificationChannelWriter.WriteAsync(@event);
 			}
 		}
 	}

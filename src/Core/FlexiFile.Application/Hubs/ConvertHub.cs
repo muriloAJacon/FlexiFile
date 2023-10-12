@@ -1,8 +1,9 @@
 ﻿using FlexiFile.Application.Commands.ConvertCommands.StartConvertCommand;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 
-namespace FlexiFile.Worker.Hubs {
+namespace FlexiFile.Application.Hubs {
 	public class ConvertHub : Hub {
 
 		private readonly ILogger<ConvertHub> _logger;
