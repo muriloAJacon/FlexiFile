@@ -1,4 +1,5 @@
 ﻿using FlexiFile.Application.Commands.ConvertCommands.StartConvertCommand;
+using FlexiFile.Core.Models.Hubs.ConvertHub;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -14,13 +15,11 @@ namespace FlexiFile.Application.Hubs {
 			_mediator = mediator;
 		}
 
-		public async Task FileConvertRequested(string idStr) {
-			_logger.LogInformation("FileConvertRequested called from client {clientId} with parameters idStr: {id}", Context.ConnectionId, idStr);
-
-			Guid id = Guid.Parse(idStr);
+		public async Task FileConvertRequested(FileConvertRequestedInfo info) {
+			_logger.LogInformation("FileConvertRequested called from client {clientId} with id: {id}", Context.ConnectionId, info.ConversionId);
 
 			await _mediator.Send(new StartConvertCommand {
-				ConversionId = id
+				ConversionId = info.ConversionId
 			});
 		}
 

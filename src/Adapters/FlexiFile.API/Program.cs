@@ -59,6 +59,8 @@ builder.Services.AddMediatR(ExtensionOptions.ConfigureMediatR)
 
 builder.Services.AddDependencyInjection();
 
+builder.Services.AddWorkerHub(x => ExtensionOptions.ConfigureWorkerHub(x, builder.Configuration));
+
 
 var app = builder.Build();
 
