@@ -37,6 +37,11 @@ namespace FlexiFile.Application.Commands.FileCommands.FileUpload {
 				return ResultCommand.BadRequest("File size does not match", "fileSizeDoesNotMatch");
 			}
 
+			var globalMaxFileSize = await _unitOfWork.SettingRepository.GetGlobalMaximumFileSize();
+			if (globalMaxFileSize != 0 && file.Size > globalMaxFileSize) {
+				return ResultCommand.Unauthorized("Size exceeds maximum limit.", "fileExceedsMaximumSize");
+			}
+
 			if (!file.Type.MimeTypes.Contains(request.File.ContentType)) {
 				return ResultCommand.BadRequest("File type does not match", "fileTypeDoesNotMatch");
 			}

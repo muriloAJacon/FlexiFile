@@ -23,6 +23,8 @@ builder.Services.AddSignalR().AddJsonProtocol(ExtensionOptions.ConfigureJson);
 
 builder.Services.AddDependencyInjection();
 
+builder.Services.ConfigureOptions(builder.Configuration);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

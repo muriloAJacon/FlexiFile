@@ -61,6 +61,8 @@ builder.Services.AddDependencyInjection();
 
 builder.Services.AddWorkerHub(x => ExtensionOptions.ConfigureWorkerHub(x, builder.Configuration));
 
+builder.Services.ConfigureOptions(builder.Configuration);
+
 
 var app = builder.Build();
 
