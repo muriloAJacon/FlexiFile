@@ -12,6 +12,10 @@ namespace FlexiFile.Infrastructure.Repository {
 			_keys = keys;
 		}
 
+		public async Task<Setting> GetSetting(string key) {
+			return await Context.Settings.SingleAsync(x => x.Id == key);
+		}
+
 		public async Task<bool> GetAllowAnonymousRegister() {
 			var setting = await Context.Settings.SingleAsync(x => x.Id == _keys.AllowAnonymousRegisterKey);
 			return Convert.ToBoolean(setting.Value);
