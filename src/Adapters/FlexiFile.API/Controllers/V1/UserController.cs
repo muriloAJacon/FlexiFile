@@ -1,8 +1,10 @@
-﻿using FlexiFile.Application.Commands.UserCommands.ApproveUser;
+﻿using FlexiFile.API.Filters;
+using FlexiFile.Application.Commands.UserCommands.ApproveUser;
 using FlexiFile.Application.Commands.UserCommands.CreateFirstSetup;
 using FlexiFile.Application.Commands.UserCommands.CreateUser;
 using FlexiFile.Application.Commands.UserCommands.EditUser;
 using FlexiFile.Application.Commands.UserCommands.GetFirstSetup;
+using FlexiFile.Core.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -33,12 +35,12 @@ namespace FlexiFile.API.Controllers.V1 {
 
 		[HttpPut]
 		[Authorize]
-		// TODO: Validate access level
+		[AccessLevel(AccessLevel.Admin)]
 		public async Task<IActionResult> EditUser([FromBody] EditUserCommand command) => await _mediator.Send(command);
 
 		[HttpPut("approve")]
 		[Authorize]
-		// TODO: Validate access level
+		[AccessLevel(AccessLevel.Admin)]
 		public async Task<IActionResult> ApproveUser([FromBody] ApproveUserCommand command) => await _mediator.Send(command);
 	}
 }

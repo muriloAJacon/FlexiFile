@@ -1,5 +1,7 @@
-﻿using FlexiFile.Application.Commands.SettingsCommands.ChangeAllowAnonymousRegister;
+﻿using FlexiFile.API.Filters;
+using FlexiFile.Application.Commands.SettingsCommands.ChangeAllowAnonymousRegister;
 using FlexiFile.Application.Commands.SettingsCommands.ChangeGlobalMaximumFileSize;
+using FlexiFile.Core.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,11 +20,11 @@ namespace FlexiFile.API.Controllers.V1 {
 		}
 
 		[HttpPut("allowAnonymousRegister")]
-		// TODO: Validate access level
+		[AccessLevel(AccessLevel.Root)]
 		public async Task<IActionResult> ChangeAllowAnonymousRegister([FromBody] ChangeAllowAnonymousRegisterCommand command) => await _mediator.Send(command);
 
 		[HttpPut("globalMaximumFileSize")]
-		// TODO: Validate access level
+		[AccessLevel(AccessLevel.Root)]
 		public async Task<IActionResult> ChangeGlobalMaximumFileSize([FromBody] ChangeGlobalMaximumFileSizeCommand command) => await _mediator.Send(command);
 	}
 }
