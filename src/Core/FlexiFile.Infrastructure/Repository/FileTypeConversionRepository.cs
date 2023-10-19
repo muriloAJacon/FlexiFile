@@ -11,5 +11,10 @@ namespace FlexiFile.Infrastructure.Repository {
 		public async Task<FileTypeConversion?> GetByFromFileTypeToFileTypeAsync(int fromFileTypeId, int toFileTypeId) {
 			return await Context.FileTypeConversions.FirstOrDefaultAsync(x => x.FromTypeId == fromFileTypeId && x.ToTypeId == toFileTypeId && x.IsActive);
 		}
+
+
+		public async Task<List<FileTypeConversion>> GetAvailableConversions(string fromMimeType) {
+			return await Context.FileTypeConversions.Include(x => x.FromType).Where(x => x.FromType.MimeTypes.Contains(fromMimeType) && x.IsActive).ToListAsync();
+		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FlexiFile.Application.ViewModels.FileConversionViewModels;
+using FlexiFile.Application.ViewModels.FileTypeConversionViewModels;
 using FlexiFile.Application.ViewModels.FileViewModels;
 using FlexiFile.Application.ViewModels.UserViewModels;
 using FlexiFile.Core.Entities.Postgres;
@@ -14,6 +15,8 @@ namespace FlexiFile.Application.ViewModels {
 			CreateMap<User, UserViewModel>();
 
 			CreateMap<FileConversion, FileConversionViewModel>();
+
+			CreateMap<FileTypeConversion, FileTypeConversionViewModel>();
 		}
 	}
 }

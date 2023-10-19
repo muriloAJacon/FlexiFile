@@ -1,4 +1,5 @@
-﻿using FlexiFile.Application.Commands.ConvertCommands.RequestConvertCommand;
+﻿using FlexiFile.Application.Commands.ConvertCommands.GetAvailableConversionsCommand;
+using FlexiFile.Application.Commands.ConvertCommands.RequestConvertCommand;
 using FlexiFile.Application.Commands.FileCommands.FileUpload;
 using FlexiFile.Application.Commands.FileCommands.StartFileUpload;
 using MediatR;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Web;
 
 namespace FlexiFile.API.Controllers.V1 {
 	[Route("api/v{version:apiVersion}/[controller]")]
@@ -42,5 +44,11 @@ namespace FlexiFile.API.Controllers.V1 {
 		[ProducesResponseType((int)HttpStatusCode.BadRequest)]
 		[ProducesResponseType((int)HttpStatusCode.Unauthorized)]
 		public async Task<IActionResult> Convert([FromBody] RequestConvertCommand command) => await _mediator.Send(command);
+
+		[HttpGet("convert/{mimeType}")]
+		[ProducesResponseType((int)HttpStatusCode.OK)]
+		[ProducesResponseType((int)HttpStatusCode.BadRequest)]
+		[ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+		public async Task<IActionResult> GetAvailableConversions(string mimeType) => await _mediator.Send(new GetAvailableConversionsCommand(HttpUtility.UrlDecode(mimeType)));
 	}
 }
