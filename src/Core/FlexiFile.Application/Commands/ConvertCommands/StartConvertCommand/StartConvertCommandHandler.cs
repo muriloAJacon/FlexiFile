@@ -1,18 +1,10 @@
-﻿using FlexiFile.Application.Results;
-using FlexiFile.Application.Security;
-using FlexiFile.Application.ViewModels;
-using FlexiFile.Application.ViewModels.FileConversionViewModels;
-using FlexiFile.Application.ViewModels.FileViewModels;
+﻿using FlexiFile.Application.Commands.FileCommands.CreateFileConvertResult;
 using FlexiFile.Core.Entities.Postgres;
 using FlexiFile.Core.Enums;
 using FlexiFile.Core.Events;
 using FlexiFile.Core.Interfaces.Repository;
-using FlexiFile.Core.Interfaces.Results;
-using FlexiFile.Core.Interfaces.Services;
 using FlexiFile.Core.Interfaces.Services.ConvertServices;
-using FlexiFile.Infrastructure.Services;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.Threading.Channels;
@@ -55,7 +47,7 @@ namespace FlexiFile.Application.Commands.ConvertCommands.StartConvertCommand {
 
 			string directoryPath = $"/files/{conversion.File.OwnedByUserId}/{conversion.File.Id}";
 
-			var channel = Channel.CreateUnbounded<ConvertProgressNotificationEvent>();
+			var channel = Channel.CreateUnbounded<EventArgs>();
 
 			_logger.LogDebug("Starting conversion task");
 
@@ -69,18 +61,41 @@ namespace FlexiFile.Application.Commands.ConvertCommands.StartConvertCommand {
 			while (await channel.Reader.WaitToReadAsync(cancellationToken)) {
 				var @event = await channel.Reader.ReadAsync(cancellationToken);
 
-				_logger.LogDebug("Reading event {} - status {} percentage {}", @event.EventId, @event.ConvertStatus, @event.PercentageComplete);
-
-				await _mediator.Send(new UpdateConvertProgressCommand.UpdateConvertProgressCommand {
-					ConversionId = conversion.Id,
-					ConvertStatus = @event.ConvertStatus,
-					PercentageComplete = @event.PercentageComplete
-				}, cancellationToken);
-
-				_logger.LogDebug("Successfully processed event {}", @event.EventId);
+				switch (@event) {
+					case ConvertProgressNotificationEvent progressNotificationEvent:
+						await HandleConvertProgressNotificationEvent(conversion, progressNotificationEvent);
+						break;
+					case ConvertFileResultEvent convertFileResultEvent:
+						await HandleConvertFileResultEvent(conversion, convertFileResultEvent);
+						break;
+				}
 			}
 
 			_logger.LogDebug("Done");
+		}
+
+		private async Task HandleConvertProgressNotificationEvent(FileConversion conversion, ConvertProgressNotificationEvent @event) {
+			_logger.LogDebug("Reading event {} - status {} percentage {}", @event.EventId, @event.ConvertStatus, @event.PercentageComplete);
+
+			await _mediator.Send(new UpdateConvertProgressCommand.UpdateConvertProgressCommand {
+				ConversionId = conversion.Id,
+				ConvertStatus = @event.ConvertStatus,
+				PercentageComplete = @event.PercentageComplete
+			});
+
+			_logger.LogDebug("Successfully processed event {}", @event.EventId);
+		}
+
+		private async Task HandleConvertFileResultEvent(FileConversion conversion, ConvertFileResultEvent @event) {
+			_logger.LogDebug("Reading event {} - file id {} order {}", @event.EventId, @event.FileId, @event.Order);
+
+			await _mediator.Send(new CreateFileConvertResultCommand {
+				FileId = @event.FileId,
+				ConversionId = conversion.Id,
+				Order = @event.Order
+			});
+
+			_logger.LogDebug("Successfully processed event {}", @event.EventId);
 		}
 	}
 }

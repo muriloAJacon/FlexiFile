@@ -7,7 +7,7 @@ namespace FlexiFile.Worker.Configurations {
 	public static class DependencyInjectionSetup {
 		public static void AddDependencyInjection(this IServiceCollection services) {
 			services.AddTransient<IUserClaimsService, UserClaimsService>();
-			services.AddTransient<IConvertImageService, ConvertImageService>();
+			services.AddTransient<IConvertImageService, MagickService>();
 			services.AddTransient<IConvertVideoService, FFMpegService>();
 			services.AddTransient<IConvertAudioService, FFMpegService>();
 		}

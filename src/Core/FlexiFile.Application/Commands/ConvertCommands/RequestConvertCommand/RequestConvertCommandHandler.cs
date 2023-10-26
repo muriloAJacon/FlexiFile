@@ -54,9 +54,9 @@ namespace FlexiFile.Application.Commands.ConvertCommands.RequestConvertCommand {
 			_unitOfWork.FileConversionRepository.Add(fileConversionRequest);
 			await _unitOfWork.Commit();
 
-			await _convertHubClient.SendFileConvertRequestedAsync(new FileConvertRequestedInfo {
+			_ = _convertHubClient.SendFileConvertRequestedAsync(new FileConvertRequestedInfo {
 				ConversionId = conversionId
-			});
+			}).ConfigureAwait(false);
 
 			return ResultCommand.Created<FileConversion, FileConversionViewModel>(fileConversionRequest);
 		}

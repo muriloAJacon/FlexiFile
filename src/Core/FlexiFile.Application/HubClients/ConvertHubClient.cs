@@ -26,9 +26,14 @@ namespace FlexiFile.Application.HubClients {
 		}
 
 		public async Task SendFileConvertRequestedAsync(FileConvertRequestedInfo info) {
-			_logger.LogInformation("Sending FileConvertRequested for id {id}", info.ConversionId);
-			await _hubConnection.InvokeAsync("FileConvertRequested", info);
-			_logger.LogInformation("Successfully notified hub of convert requested for id {id}", info.ConversionId);
+			try {
+				_logger.LogInformation("Sending FileConvertRequested for id {id}", info.ConversionId);
+				await _hubConnection.InvokeAsync("FileConvertRequested", info);
+				_logger.LogInformation("Successfully notified hub of convert requested for id {id}", info.ConversionId);
+
+			} catch (Exception ex) {
+				_logger.LogError(ex, "Error sending FileConvertRequested for id {id}", info.ConversionId);
+			}
 		}
 	}
 }

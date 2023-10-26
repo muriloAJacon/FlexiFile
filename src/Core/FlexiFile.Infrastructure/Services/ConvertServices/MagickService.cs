@@ -4,17 +4,16 @@ using FlexiFile.Core.Interfaces.Services.ConvertServices;
 using ImageMagick;
 using Microsoft.Extensions.Logging;
 using System.Threading.Channels;
-using static FlexiFile.Core.Interfaces.Services.ConvertServices.IConvertFileService;
 
 namespace FlexiFile.Infrastructure.Services.ConvertServices {
-	public class ConvertImageService : IConvertImageService {
-		private readonly ILogger<ConvertImageService> _logger;
+	public class MagickService : IConvertImageService {
+		private readonly ILogger<MagickService> _logger;
 
-		public ConvertImageService(ILogger<ConvertImageService> logger) {
+		public MagickService(ILogger<MagickService> logger) {
 			_logger = logger;
 		}
 
-		public async Task ConvertFile(ChannelWriter<ConvertProgressNotificationEvent> notificationChannelWriter, Core.Entities.Postgres.File file, string fileDirectory, FileType inputFileType, FileType outputFileType) {
+		public async Task ConvertFile(ChannelWriter<EventArgs> notificationChannelWriter, Core.Entities.Postgres.File file, string fileDirectory, FileType inputFileType, FileType outputFileType) {
 			try {
 				var directory = new DirectoryInfo(fileDirectory);
 
@@ -40,6 +39,13 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 				}
 
 				await image.WriteAsync(outputPath, format);
+
+				var fileResultEvent = new ConvertFileResultEvent {
+					EventId = Guid.NewGuid(),
+					FileId = outputFileId,
+					Order = 1
+				};
+				await notificationChannelWriter.WriteAsync(fileResultEvent);
 
 				var @event = new ConvertProgressNotificationEvent {
 					ConvertStatus = Core.Enums.ConvertStatus.Completed,
