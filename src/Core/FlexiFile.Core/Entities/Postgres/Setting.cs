@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FlexiFile.Core.Entities.Postgres;
 
 [Table("Setting", Schema = "FlexiFile")]
+[Index("UpdatedByUserId", Name = "IX_Setting_updated_by_user_id")]
 public partial class Setting
 {
     [Key]
@@ -16,7 +17,8 @@ public partial class Setting
     [Column("value", TypeName = "character varying")]
     public string Value { get; set; } = null!;
 
-    [Column("last_update_date", TypeName = "timestamp(3) with time zone")]
+    [Column("last_update_date")]
+    [Precision(3, 0)]
     public DateTime? LastUpdateDate { get; set; }
 
     [Column("updated_by_user_id")]

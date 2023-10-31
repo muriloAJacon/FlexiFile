@@ -6,9 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlexiFile.Core.Entities.Postgres;
 
-[Table("FileConversionResult", Schema = "FlexiFile")]
-[Index("FileConversionId", Name = "IX_FileConversionResult_file_conversion_id")]
-public partial class FileConversionResult
+[Table("FileConversionOrigin", Schema = "FlexiFile")]
+public partial class FileConversionOrigin
 {
     [Key]
     [Column("id")]
@@ -17,14 +16,20 @@ public partial class FileConversionResult
     [Column("file_conversion_id")]
     public Guid FileConversionId { get; set; }
 
-    [Column("creation_date")]
-    [Precision(3, 0)]
-    public DateTime CreationDate { get; set; }
+    [Column("file_id")]
+    public Guid FileId { get; set; }
 
     [Column("order")]
     public int Order { get; set; }
 
+    [Column("extra_info", TypeName = "json")]
+    public string? ExtraInfo { get; set; }
+
+    [ForeignKey("FileId")]
+    [InverseProperty("FileConversionOrigins")]
+    public virtual File File { get; set; } = null!;
+
     [ForeignKey("FileConversionId")]
-    [InverseProperty("FileConversionResults")]
+    [InverseProperty("FileConversionOrigins")]
     public virtual FileConversion FileConversion { get; set; } = null!;
 }

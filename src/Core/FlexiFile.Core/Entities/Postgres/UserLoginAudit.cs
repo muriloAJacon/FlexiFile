@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FlexiFile.Core.Entities.Postgres;
 
 [Table("UserLoginAudit", Schema = "FlexiFile")]
+[Index("UserId", Name = "IX_UserLoginAudit_user_id")]
 public partial class UserLoginAudit
 {
     [Key]
@@ -25,7 +26,8 @@ public partial class UserLoginAudit
     [Column("source_user_agent", TypeName = "character varying")]
     public string SourceUserAgent { get; set; } = null!;
 
-    [Column("timestamp", TypeName = "timestamp(3) with time zone")]
+    [Column("timestamp")]
+    [Precision(3, 0)]
     public DateTime Timestamp { get; set; }
 
     [ForeignKey("UserId")]

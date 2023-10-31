@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace FlexiFile.Core.Entities.Postgres;
 
 [Table("File", Schema = "FlexiFile")]
+[Index("OwnedByUserId", Name = "IX_File_owned_by_user_id")]
+[Index("TypeId", Name = "IX_File_type_id")]
 public partial class File
 {
     [Key]
@@ -25,17 +27,19 @@ public partial class File
     [Column("original_name", TypeName = "character varying")]
     public string OriginalName { get; set; } = null!;
 
-    [Column("submitted_at", TypeName = "timestamp(3) with time zone")]
+    [Column("submitted_at")]
+    [Precision(3, 0)]
     public DateTime SubmittedAt { get; set; }
 
     [Column("finished_upload")]
     public bool FinishedUpload { get; set; }
 
-    [Column("finished_upload_at", TypeName = "timestamp(3) with time zone")]
+    [Column("finished_upload_at")]
+    [Precision(3, 0)]
     public DateTime? FinishedUploadAt { get; set; }
 
     [InverseProperty("File")]
-    public virtual ICollection<FileConversion> FileConversions { get; set; } = new List<FileConversion>();
+    public virtual ICollection<FileConversionOrigin> FileConversionOrigins { get; set; } = new List<FileConversionOrigin>();
 
     [ForeignKey("OwnedByUserId")]
     [InverseProperty("Files")]

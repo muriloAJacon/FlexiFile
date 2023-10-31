@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 namespace FlexiFile.Core.Entities.Postgres;
 
 [Table("User", Schema = "FlexiFile")]
+[Index("ApprovedByUserId", Name = "IX_User_approved_by_user_id")]
+[Index("CreatedByUserId", Name = "IX_User_created_by_user_id")]
 public partial class User
 {
     [Key]
@@ -29,19 +31,22 @@ public partial class User
     [Column("approved")]
     public bool Approved { get; set; }
 
-    [Column("approved_at", TypeName = "timestamp(3) with time zone")]
+    [Column("approved_at")]
+    [Precision(3, 0)]
     public DateTime? ApprovedAt { get; set; }
 
     [Column("approved_by_user_id")]
     public Guid? ApprovedByUserId { get; set; }
 
-    [Column("creation_date", TypeName = "timestamp(3) with time zone")]
+    [Column("creation_date")]
+    [Precision(3, 0)]
     public DateTime CreationDate { get; set; }
 
     [Column("created_by_user_id")]
     public Guid? CreatedByUserId { get; set; }
 
-    [Column("last_update_date", TypeName = "timestamp(3) with time zone")]
+    [Column("last_update_date")]
+    [Precision(3, 0)]
     public DateTime LastUpdateDate { get; set; }
 
     [Column("storage_limit")]
