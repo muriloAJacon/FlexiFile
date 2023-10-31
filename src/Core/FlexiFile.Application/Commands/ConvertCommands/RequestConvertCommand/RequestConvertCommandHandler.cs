@@ -29,12 +29,15 @@ namespace FlexiFile.Application.Commands.ConvertCommands.RequestConvertCommand {
 
 		public async Task<IResultCommand> Handle(RequestConvertCommand request, CancellationToken cancellationToken) {
 
-			var file = await _unitOfWork.FileRepository.GetUserFileByIdAsync(request.FileId, _userClaimsService.Id);
-			if (file is null) {
-				return ResultCommand.BadRequest("File not found", "fileNotFound");
+			var files = await _unitOfWork.FileRepository.GetUserFilesByIdAsync(request.FileIds, _userClaimsService.Id);
+			var foundFilesIds = files.Select(x => x.Id);
+			var notFoundFilesIds = request.FileIds.Except(foundFilesIds);
+
+			if (notFoundFilesIds.Any()) {
+				return ResultCommand.BadRequest($"Files: {string.Join(',', notFoundFilesIds)} not found", "fileNotFound");
 			}
 
-			var fileConversion = await _unitOfWork.FileTypeConversionRepository.GetByFromFileTypeToFileTypeAsync(file.TypeId, request.ToTypeId);
+			var fileConversion = await _unitOfWork.FileTypeConversionRepository.GetByIdAsync(request.ConversionId);
 			if (fileConversion is null) {
 				return ResultCommand.BadRequest("File conversion not found", "fileConversionNotFound");
 			}
@@ -42,7 +45,7 @@ namespace FlexiFile.Application.Commands.ConvertCommands.RequestConvertCommand {
 			Guid conversionId = Guid.NewGuid();
 			var fileConversionRequest = new FileConversion {
 				Id = conversionId,
-				File = file,
+				FileConversionOrigins = new List<FileConversionOrigin>(),
 				FileTypeConversion = fileConversion,
 				Status = ConvertStatus.AwaitingQueue,
 				PercentageComplete = 0,
@@ -50,6 +53,19 @@ namespace FlexiFile.Application.Commands.ConvertCommands.RequestConvertCommand {
 				LastUpdateDate = DateTime.UtcNow,
 				ExtraInfo = null
 			};
+
+			for (int i = 0; i < request.FileIds.Count; i++) {
+				Guid fileId = request.FileIds[i];
+				File file = files.Single(x => x.Id == fileId);
+				var fileConversionOrigin = new FileConversionOrigin {
+					Id = Guid.NewGuid(),
+					File = file,
+					Order = i + 1,
+					ExtraInfo = null
+				};
+
+				fileConversionRequest.FileConversionOrigins.Add(fileConversionOrigin);
+			}
 
 			_unitOfWork.FileConversionRepository.Add(fileConversionRequest);
 			await _unitOfWork.Commit();

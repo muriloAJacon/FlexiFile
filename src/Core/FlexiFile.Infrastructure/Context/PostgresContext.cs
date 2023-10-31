@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using FlexiFile.Core.Entities.Postgres;
 using Microsoft.EntityFrameworkCore;
+using File = FlexiFile.Core.Entities.Postgres.File;
 
 namespace FlexiFile.Infrastructure.Context;
 
