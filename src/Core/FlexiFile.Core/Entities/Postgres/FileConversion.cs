@@ -35,6 +35,9 @@ public partial class FileConversion
     [Column("extra_info", TypeName = "json")]
     public string? ExtraInfo { get; set; }
 
+    [Column("user_id")]
+    public Guid UserId { get; set; }
+
     [InverseProperty("FileConversion")]
     public virtual ICollection<FileConversionOrigin> FileConversionOrigins { get; set; } = new List<FileConversionOrigin>();
 
@@ -44,4 +47,8 @@ public partial class FileConversion
     [ForeignKey("FileTypeConversionId")]
     [InverseProperty("FileConversions")]
     public virtual FileTypeConversion FileTypeConversion { get; set; } = null!;
+
+    [ForeignKey("UserId")]
+    [InverseProperty("FileConversions")]
+    public virtual User User { get; set; } = null!;
 }

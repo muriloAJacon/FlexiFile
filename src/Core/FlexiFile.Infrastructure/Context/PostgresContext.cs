@@ -60,6 +60,10 @@ public partial class PostgresContext : DbContext
             entity.HasOne(d => d.FileTypeConversion).WithMany(p => p.FileConversions)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_FileConversion_FileTypeConversion");
+
+            entity.HasOne(d => d.User).WithMany(p => p.FileConversions)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_FileConversion_User");
         });
 
         modelBuilder.Entity<FileConversionOrigin>(entity =>

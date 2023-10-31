@@ -60,6 +60,9 @@ public partial class User
     [InverseProperty("InverseCreatedByUser")]
     public virtual User? CreatedByUser { get; set; }
 
+    [InverseProperty("User")]
+    public virtual ICollection<FileConversion> FileConversions { get; set; } = new List<FileConversion>();
+
     [InverseProperty("OwnedByUser")]
     public virtual ICollection<File> Files { get; set; } = new List<File>();
 
