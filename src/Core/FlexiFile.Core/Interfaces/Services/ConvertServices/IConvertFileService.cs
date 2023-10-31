@@ -1,10 +1,9 @@
 ﻿using FlexiFile.Core.Entities.Postgres;
 using FlexiFile.Core.Events;
 using System.Threading.Channels;
-using File = FlexiFile.Core.Entities.Postgres.File;
 
 namespace FlexiFile.Core.Interfaces.Services.ConvertServices {
 	public interface IConvertFileService {
-		Task ConvertFile(ChannelWriter<EventArgs> notificationChannelWriter, File file, string fileDirectory, FileType inputFileType, FileType outputFileType);
+		Task ConvertFile(ChannelWriter<EventArgs> notificationChannelWriter, FileConversion fileConversion, string fileDirectory, FileType inputFileType, FileType? outputFileType);
 	}
 }

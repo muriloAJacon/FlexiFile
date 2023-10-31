@@ -51,7 +51,8 @@ namespace FlexiFile.Application.Commands.ConvertCommands.RequestConvertCommand {
 				PercentageComplete = 0,
 				CreationDate = DateTime.UtcNow,
 				LastUpdateDate = DateTime.UtcNow,
-				ExtraInfo = null
+				ExtraInfo = null,
+				UserId = _userClaimsService.Id,
 			};
 
 			for (int i = 0; i < request.FileIds.Count; i++) {

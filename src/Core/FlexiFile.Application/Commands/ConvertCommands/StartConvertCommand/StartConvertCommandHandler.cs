@@ -45,13 +45,20 @@ namespace FlexiFile.Application.Commands.ConvertCommands.StartConvertCommand {
 				throw new TargetException($"Service is not an instance of {nameof(IConvertFileService)}");
 			}
 
-			string directoryPath = $"/files/{conversion.File.OwnedByUserId}/{conversion.File.Id}";
+			string userDirectoryPath = $"/files/{conversion.UserId}";
+
+			string conversionDirectoryPath = Path.Combine(userDirectoryPath, conversion.Id.ToString());
+			var directoryInfo = new DirectoryInfo(conversionDirectoryPath);
+			if (!directoryInfo.Exists) {
+				_logger.LogInformation("Creating path {} for conversion", directoryInfo.FullName);
+				directoryInfo.Create();
+			}
 
 			var channel = Channel.CreateUnbounded<EventArgs>();
 
 			_logger.LogDebug("Starting conversion task");
 
-			var convertTask = convertFileService.ConvertFile(channel, conversion.File, directoryPath, conversion.FileTypeConversion.FromType, conversion.FileTypeConversion.ToType);
+			var convertTask = convertFileService.ConvertFile(channel, conversion, userDirectoryPath, conversion.FileTypeConversion.FromType, conversion.FileTypeConversion.ToType);
 
 			_ = convertTask.ContinueWith(_ => {
 				_logger.LogDebug("Conversion done - Closing channel");

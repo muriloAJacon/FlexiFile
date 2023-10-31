@@ -14,14 +14,23 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 			_logger = logger;
 		}
 
-		public async Task ConvertFile(ChannelWriter<EventArgs> notificationChannelWriter, Core.Entities.Postgres.File file, string fileDirectory, FileType inputFileType, FileType outputFileType) {
+		public async Task ConvertFile(ChannelWriter<EventArgs> notificationChannelWriter, FileConversion conversion, string fileDirectory, FileType inputFileType, FileType? outputFileType) {
 			try {
+				if (outputFileType is null) {
+					throw new ArgumentNullException(nameof(outputFileType), "Output file type cannot be null for this conversion type");
+				}
+
+				if (conversion.FileConversionOrigins.Count > 1) {
+					throw new ArgumentException("This conversion type does not support multiple origin files", nameof(conversion));
+				}
+
 				var directory = new DirectoryInfo(fileDirectory);
 
-				string inputFilePath = Path.Combine(directory.FullName, "original");
+				var inputFile = conversion.FileConversionOrigins.First();
+				string inputFilePath = Path.Combine(directory.FullName, inputFile.FileId.ToString());
 
 				Guid outputFileId = Guid.NewGuid();
-				string outputPath = Path.Combine(directory.FullName, outputFileId.ToString());
+				string outputPath = Path.Combine(directory.FullName, conversion.Id.ToString(), outputFileId.ToString());
 
 				string tempOutputPath = outputPath + "." + outputFileType.MimeTypes.First() switch {
 					"video/mp4" => "mp4",
@@ -37,7 +46,7 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 
 				var result = await FFMpegArguments.FromFileInput(inputFilePath).OutputToFile(tempOutputPath, overwrite: true, delegate (FFMpegArgumentOptions options) {
 					options.UsingMultithreading(true);
-				}).NotifyOnProgress((progress) => HandleProgress(progress, file, notificationChannelWriter), mediaInfo.Duration).ProcessAsynchronously();
+				}).NotifyOnProgress((progress) => HandleProgress(progress, conversion, notificationChannelWriter), mediaInfo.Duration).ProcessAsynchronously();
 
 				if (!result) {
 					throw new Exception("Failed to convert file");
@@ -70,8 +79,8 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 			}
 		}
 
-		private async void HandleProgress(double progress, Core.Entities.Postgres.File file, ChannelWriter<EventArgs> channelWriter) {
-			_logger.LogInformation("File {}: progress: {}", file.Id, progress);
+		private async void HandleProgress(double progress, FileConversion conversion, ChannelWriter<EventArgs> channelWriter) {
+			_logger.LogInformation("Conversion {}: progress: {}", conversion.Id, progress);
 
 			var @event = new ConvertProgressNotificationEvent {
 				EventId = Guid.NewGuid(),

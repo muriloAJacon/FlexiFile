@@ -16,13 +16,13 @@ namespace FlexiFile.Infrastructure.Services {
 		}
 
 		public async Task UploadFile(IFormFile file, Guid fileId, Guid userId) {
-			var dir = new DirectoryInfo($"/files/{userId}/{fileId}");
+			var dir = new DirectoryInfo($"/files/{userId}");
 			if (!dir.Exists) {
 				_logger.LogInformation("Creating directory {path}", dir.FullName);
 				dir.Create();
 			}
 
-			using var stream = new FileStream(Path.Combine(dir.FullName, "original"), FileMode.CreateNew, FileAccess.Write);
+			using var stream = new FileStream(Path.Combine(dir.FullName, fileId.ToString()), FileMode.CreateNew, FileAccess.Write);
 			await file.CopyToAsync(stream);
 
 			await stream.FlushAsync();

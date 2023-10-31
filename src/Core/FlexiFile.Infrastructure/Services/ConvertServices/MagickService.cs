@@ -3,6 +3,7 @@ using FlexiFile.Core.Events;
 using FlexiFile.Core.Interfaces.Services.ConvertServices;
 using ImageMagick;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
 using System.Threading.Channels;
 
 namespace FlexiFile.Infrastructure.Services.ConvertServices {
@@ -13,14 +14,23 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 			_logger = logger;
 		}
 
-		public async Task ConvertFile(ChannelWriter<EventArgs> notificationChannelWriter, Core.Entities.Postgres.File file, string fileDirectory, FileType inputFileType, FileType outputFileType) {
+		public async Task ConvertFile(ChannelWriter<EventArgs> notificationChannelWriter, FileConversion conversion, string fileDirectory, FileType inputFileType, FileType? outputFileType) {
 			try {
+				if (outputFileType is null) {
+					throw new ArgumentNullException(nameof(outputFileType), "Output file type cannot be null for this conversion type");
+				}
+
+				if (conversion.FileConversionOrigins.Count > 1) {
+					throw new ArgumentException("This conversion type does not support multiple origin files", nameof(conversion));
+				}
+
 				var directory = new DirectoryInfo(fileDirectory);
 
-				string inputFilePath = Path.Combine(directory.FullName, "original");
+				var inputFile = conversion.FileConversionOrigins.First();
+				string inputFilePath = Path.Combine(directory.FullName, inputFile.FileId.ToString());
 
 				Guid outputFileId = Guid.NewGuid();
-				string outputPath = Path.Combine(directory.FullName, outputFileId.ToString());
+				string outputPath = Path.Combine(directory.FullName, conversion.Id.ToString(), outputFileId.ToString());
 
 				using var image = new MagickImage(inputFilePath);
 
@@ -48,6 +58,7 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 				await notificationChannelWriter.WriteAsync(fileResultEvent);
 
 				var @event = new ConvertProgressNotificationEvent {
+					EventId = Guid.NewGuid(),
 					ConvertStatus = Core.Enums.ConvertStatus.Completed,
 					PercentageComplete = 100
 				};
@@ -57,6 +68,7 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 				_logger.LogError(ex, "Failed to convert file");
 
 				var @event = new ConvertProgressNotificationEvent {
+					EventId= Guid.NewGuid(),
 					ConvertStatus = Core.Enums.ConvertStatus.Failed,
 				};
 
