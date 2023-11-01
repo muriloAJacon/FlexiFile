@@ -2,6 +2,7 @@ using Autofac.Extensions.DependencyInjection;
 using FlexiFile.API.Configurations;
 using FlexiFile.API.Filters;
 using FlexiFile.API.Options;
+using FlexiFile.Core.Models.ConversionParameters.RearrangeDocument;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MassTransit;
@@ -47,6 +48,8 @@ builder.Services.AddPostgres(builder.Configuration, builder.Environment);
 builder.Services.AddRepositories();
 
 builder.Services.AddValidatorsFromAssembly(AppDomain.CurrentDomain.Load("FlexiFile.Application"));
+
+builder.Services.AddValidatorsFromAssembly(AppDomain.CurrentDomain.Load("FlexiFile.Core"));
 
 builder.Services.AddFluentValidationAutoValidation();
 

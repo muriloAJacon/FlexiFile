@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
 using FlexiFile.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,7 +34,7 @@ public partial class FileConversion
     public DateTime LastUpdateDate { get; set; }
 
     [Column("extra_info", TypeName = "json")]
-    public string? ExtraInfo { get; set; }
+    public JsonElement? ExtraInfo { get; set; }
 
     [Column("user_id")]
     public Guid UserId { get; set; }

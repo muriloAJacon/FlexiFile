@@ -5,6 +5,7 @@ using FlexiFile.Core.Events;
 using FlexiFile.Core.Interfaces.Repository;
 using FlexiFile.Core.Interfaces.Services.ConvertServices;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.Threading.Channels;
@@ -40,7 +41,7 @@ namespace FlexiFile.Application.Commands.ConvertCommands.StartConvertCommand {
 			var assembly = Assembly.GetAssembly(typeof(IConvertFileService)) ?? throw new Exception("Assembly not found");
 			var type = assembly.GetTypes().FirstOrDefault(t => t.Name == interfaceName) ?? throw new Exception("Type not found");
 
-			var service = _serviceProvider.GetService(type);
+			var service = _serviceProvider.GetRequiredService(type);
 			if (service is not IConvertFileService convertFileService) {
 				throw new TargetException($"Service is not an instance of {nameof(IConvertFileService)}");
 			}
