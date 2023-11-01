@@ -42,6 +42,19 @@ namespace FlexiFile.Application.Commands.ConvertCommands.RequestConvertCommand {
 				return ResultCommand.BadRequest("File conversion not found", "fileConversionNotFound");
 			}
 
+			var wrongTypeFiles = files.Where(x => x.TypeId != fileConversion.FromTypeId).ToList();
+			if (wrongTypeFiles.Any()) {
+				return ResultCommand.BadRequest($"Files: {string.Join(',', wrongTypeFiles.Select(x => x.Id))} are not of type {fileConversion.FromType.Description}", "wrongFileType");
+			}
+
+			if (request.FileIds.Count < fileConversion.MinNumberFiles) {
+				return ResultCommand.BadRequest($"Minimum number of files for this conversion type is {fileConversion.MinNumberFiles}", "minNumberFiles");
+			}
+
+			if (request.FileIds.Count > fileConversion.MaxNumberFiles) {
+				return ResultCommand.BadRequest($"Maximum number of files for this conversion type is {fileConversion.MaxNumberFiles}", "maxNumberFiles");
+			}
+
 			Guid conversionId = Guid.NewGuid();
 			var fileConversionRequest = new FileConversion {
 				Id = conversionId,

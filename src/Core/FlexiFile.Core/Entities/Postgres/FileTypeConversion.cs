@@ -36,6 +36,15 @@ public partial class FileTypeConversion
     [Column("handler_class_name", TypeName = "character varying")]
     public string HandlerClassName { get; set; } = null!;
 
+	[Column("min_number_files")]
+	public int? MinNumberFiles { get; set; }
+
+	[Column("max_number_files")]
+	public int? MaxNumberFiles { get; set; }
+
+	[Column("model_class_name", TypeName = "character varying")]
+    public string? ModelClassName { get; set; }
+
     [InverseProperty("FileTypeConversion")]
     public virtual ICollection<FileConversion> FileConversions { get; set; } = new List<FileConversion>();
 
