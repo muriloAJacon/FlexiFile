@@ -11,6 +11,7 @@ namespace FlexiFile.Worker.Configurations {
 			services.AddTransient<IConvertVideoService, FFMpegService>();
 			services.AddTransient<IConvertAudioService, FFMpegService>();
 			services.AddTransient<ISplitDocumentService, ITextSplitDocumentService>();
+			services.AddTransient<IMergeDocumentService, ITextMergeDocumentService>();
 		}
 	}
 }

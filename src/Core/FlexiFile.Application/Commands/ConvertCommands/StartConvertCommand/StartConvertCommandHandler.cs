@@ -26,9 +26,9 @@ namespace FlexiFile.Application.Commands.ConvertCommands.StartConvertCommand {
 		public async Task Handle(StartConvertCommand request, CancellationToken cancellationToken) {
 			var conversion = await _unitOfWork.FileConversionRepository.GetByIdAsync(request.ConversionId) ?? throw new Exception($"File conversion with id {request.ConversionId} not found");
 
-			//if (conversion.Status != ConvertStatus.AwaitingQueue) {
-			//	throw new Exception($"File conversion with id {request.ConversionId} is not awaiting queue");
-			//}
+			if (conversion.Status != ConvertStatus.AwaitingQueue) {
+				throw new Exception($"File conversion with id {request.ConversionId} is not awaiting queue");
+			}
 
 			await _mediator.Send(new UpdateConvertProgressCommand.UpdateConvertProgressCommand {
 				ConversionId = conversion.Id,
