@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 namespace FlexiFile.Core.Models.ConversionParameters.RearrangeDocument {
 	public class RearrangeDocumentParametersValidator : AbstractValidator<RearrangeDocumentParameters> {
 		public RearrangeDocumentParametersValidator() {
-			RuleFor(x => x.OriginalIndexes).NotEmpty();
+			RuleFor(x => x.OriginalPageNumbers)
+				.NotEmpty()
+				.ForEach(x => x.GreaterThan(0));
 		}
 	}
 }

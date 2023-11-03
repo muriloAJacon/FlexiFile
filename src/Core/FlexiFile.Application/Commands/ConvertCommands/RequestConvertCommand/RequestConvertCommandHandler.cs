@@ -9,6 +9,7 @@ using FlexiFile.Core.Interfaces.Services;
 using FlexiFile.Core.Interfaces.Services.ConvertServices;
 using FlexiFile.Core.Models.Hubs.ConvertHub;
 using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -21,12 +22,14 @@ namespace FlexiFile.Application.Commands.ConvertCommands.RequestConvertCommand {
 		private readonly IUserClaimsService _userClaimsService;
 		private readonly ConvertHubClient _convertHubClient;
 		private readonly IServiceProvider _serviceProvider;
+		private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-		public RequestConvertCommandHandler(IUnitOfWork unitOfWork, IUserClaimsService userClaimsService, ConvertHubClient convertHubClient, IServiceProvider serviceProvider) {
+		public RequestConvertCommandHandler(IUnitOfWork unitOfWork, IUserClaimsService userClaimsService, ConvertHubClient convertHubClient, IServiceProvider serviceProvider, JsonSerializerOptions jsonSerializerOptions) {
 			_unitOfWork = unitOfWork;
 			_userClaimsService = userClaimsService;
 			_convertHubClient = convertHubClient;
 			_serviceProvider = serviceProvider;
+			_jsonSerializerOptions = jsonSerializerOptions;
 		}
 
 		public async Task<IResultCommand> Handle(RequestConvertCommand request, CancellationToken cancellationToken) {
@@ -63,22 +66,15 @@ namespace FlexiFile.Application.Commands.ConvertCommands.RequestConvertCommand {
 					return ResultCommand.BadRequest($"Extra parameters is required", "extraParametersRequired");
 				}
 
-				// TODO: Change get assembly to different type, IConvertFileService is not related to these models
-				var assembly = Assembly.GetAssembly(typeof(IConvertFileService)) ?? throw new Exception("Assembly not found");
+				var assembly = Assembly.Load("FlexiFile.Core");
 				var type = assembly.GetTypes().FirstOrDefault(t => t.Name == fileConversion.ModelClassName) ?? throw new Exception("Type not found");
 
-				JsonSerializerOptions options = new() {
-					PropertyNameCaseInsensitive = true
-				};
-				var parameters = request.ExtraParameters.Value.Deserialize(type, options);
+				var parameters = request.ExtraParameters.Value.Deserialize(type, _jsonSerializerOptions) ?? throw new Exception("Could not deserialize parameters");
 
-				var validator = (IValidator)_serviceProvider.GetRequiredService(typeof(IValidator<>).MakeGenericType(type));
-				var context = typeof(ValidationContext<>).MakeGenericType(type).GetConstructor(new Type[] { type }).Invoke(new object[] { parameters }) as IValidationContext;
-
-				var validationResult = validator.Validate(context);
+				ValidationResult validationResult = ValidateExtraParameters(type, parameters);
 
 				if (!validationResult.IsValid) {
-					return ResultCommand.BadRequest("TODO: RESULT", "TODO");
+					return ResultCommand.BadRequest(validationResult.ToString(), "invalidExtraParameters");
 				}
 
 				extraParameters = JsonSerializer.SerializeToElement(parameters);
@@ -118,6 +114,17 @@ namespace FlexiFile.Application.Commands.ConvertCommands.RequestConvertCommand {
 			});
 
 			return ResultCommand.Created<FileConversion, FileConversionViewModel>(fileConversionRequest);
+		}
+
+		private ValidationResult ValidateExtraParameters(Type type, object parameters) {
+			var validator = (_serviceProvider.GetRequiredService(typeof(IValidator<>).MakeGenericType(type)) as IValidator) ?? throw new Exception($"Could not get IValidator service for type {type.FullName}");
+			var validatorType = typeof(ValidationContext<>).MakeGenericType(type);
+			var validatorTypeConstructor = validatorType.GetConstructor(new Type[] { type }) ?? throw new Exception("Could not get validator constructor");
+
+			var context = (validatorTypeConstructor.Invoke(new object[] { parameters }) as IValidationContext) ?? throw new Exception("Could not construct validation context");
+
+			var validationResult = validator.Validate(context);
+			return validationResult;
 		}
 	}
 }

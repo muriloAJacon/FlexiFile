@@ -12,6 +12,7 @@ namespace FlexiFile.Worker.Configurations {
 			services.AddTransient<IConvertAudioService, FFMpegService>();
 			services.AddTransient<ISplitDocumentService, ITextSplitDocumentService>();
 			services.AddTransient<IMergeDocumentService, ITextMergeDocumentService>();
+			services.AddTransient<IRearrangeDocumentService, ITextRearrangeDocumentService>();
 		}
 	}
 }
