@@ -5,15 +5,17 @@ VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapters", "Adapters", "{4703B4CF-2403-426A-BFC0-A337F18A1123}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlexiFile.API", "Adapters\FlexiFile.API\FlexiFile.API.csproj", "{68580EA7-A5C0-483B-9B01-EFC5911E8889}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlexiFile.API", "Adapters\FlexiFile.API\FlexiFile.API.csproj", "{68580EA7-A5C0-483B-9B01-EFC5911E8889}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{5897C374-96D4-42B8-96A8-76030A12F71C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlexiFile.Application", "Core\FlexiFile.Application\FlexiFile.Application.csproj", "{B3BD9860-8DFC-4B91-9951-BAB36D07F777}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlexiFile.Application", "Core\FlexiFile.Application\FlexiFile.Application.csproj", "{B3BD9860-8DFC-4B91-9951-BAB36D07F777}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlexiFile.Core", "Core\FlexiFile.Core\FlexiFile.Core.csproj", "{2DD16843-6924-4D58-A9D0-F8149D545704}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlexiFile.Core", "Core\FlexiFile.Core\FlexiFile.Core.csproj", "{2DD16843-6924-4D58-A9D0-F8149D545704}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlexiFile.Infrastructure", "Core\FlexiFile.Infrastructure\FlexiFile.Infrastructure.csproj", "{0EC2EC52-E577-4FDB-BBC9-23AC0ECBDC31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlexiFile.Infrastructure", "Core\FlexiFile.Infrastructure\FlexiFile.Infrastructure.csproj", "{0EC2EC52-E577-4FDB-BBC9-23AC0ECBDC31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlexiFile.Worker", "Adapters\FlexiFile.Worker\FlexiFile.Worker.csproj", "{A66A21C8-A502-46E9-99B7-1F1858762961}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{0EC2EC52-E577-4FDB-BBC9-23AC0ECBDC31}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EC2EC52-E577-4FDB-BBC9-23AC0ECBDC31}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EC2EC52-E577-4FDB-BBC9-23AC0ECBDC31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A66A21C8-A502-46E9-99B7-1F1858762961}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A66A21C8-A502-46E9-99B7-1F1858762961}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A66A21C8-A502-46E9-99B7-1F1858762961}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A66A21C8-A502-46E9-99B7-1F1858762961}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{B3BD9860-8DFC-4B91-9951-BAB36D07F777} = {5897C374-96D4-42B8-96A8-76030A12F71C}
 		{2DD16843-6924-4D58-A9D0-F8149D545704} = {5897C374-96D4-42B8-96A8-76030A12F71C}
 		{0EC2EC52-E577-4FDB-BBC9-23AC0ECBDC31} = {5897C374-96D4-42B8-96A8-76030A12F71C}
+		{A66A21C8-A502-46E9-99B7-1F1858762961} = {4703B4CF-2403-426A-BFC0-A337F18A1123}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A4614465-5C49-4811-8F2C-8694B41C3E58}

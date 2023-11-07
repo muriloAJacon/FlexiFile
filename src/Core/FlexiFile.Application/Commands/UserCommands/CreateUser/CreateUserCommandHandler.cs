@@ -23,7 +23,11 @@ namespace FlexiFile.Application.Commands.UserCommands.CreateUser {
 			Guid? createdByUser = _userClaimsService.TryGetId();
 
 			if (createdByUser is null) {
-				// TODO: CHECK IF SETTING FOR ANONYMOUS CREATION IS ENABLED
+				bool allowAnonymousRegister = await _unitOfWork.SettingRepository.GetAllowAnonymousRegister();
+				if (!allowAnonymousRegister) {
+					return ResultCommand.Forbidden("Registration of users is disabled.", "registerNotAllowed");
+				}
+
 			} else if (_userClaimsService.AccessLevel < AccessLevel.Admin) {
 				return ResultCommand.Forbidden("You do not have access to perform this action.", "permissionRequired");
 			}

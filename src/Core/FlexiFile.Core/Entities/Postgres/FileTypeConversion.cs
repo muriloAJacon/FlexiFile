@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace FlexiFile.Core.Entities.Postgres;
 
 [Table("FileTypeConversion", Schema = "FlexiFile")]
+[Index("FromTypeId", Name = "IX_FileTypeConversion_from_type_id")]
+[Index("ToTypeId", Name = "IX_FileTypeConversion_to_type_id")]
 public partial class FileTypeConversion
 {
     [Key]
@@ -23,7 +25,7 @@ public partial class FileTypeConversion
     public int FromTypeId { get; set; }
 
     [Column("to_type_id")]
-    public int ToTypeId { get; set; }
+    public int? ToTypeId { get; set; }
 
     [Column("description")]
     public string? Description { get; set; }
@@ -34,6 +36,15 @@ public partial class FileTypeConversion
     [Column("handler_class_name", TypeName = "character varying")]
     public string HandlerClassName { get; set; } = null!;
 
+	[Column("min_number_files")]
+	public int? MinNumberFiles { get; set; }
+
+	[Column("max_number_files")]
+	public int? MaxNumberFiles { get; set; }
+
+	[Column("model_class_name", TypeName = "character varying")]
+    public string? ModelClassName { get; set; }
+
     [InverseProperty("FileTypeConversion")]
     public virtual ICollection<FileConversion> FileConversions { get; set; } = new List<FileConversion>();
 
@@ -43,5 +54,5 @@ public partial class FileTypeConversion
 
     [ForeignKey("ToTypeId")]
     [InverseProperty("FileTypeConversionToTypes")]
-    public virtual FileType ToType { get; set; } = null!;
+    public virtual FileType? ToType { get; set; }
 }

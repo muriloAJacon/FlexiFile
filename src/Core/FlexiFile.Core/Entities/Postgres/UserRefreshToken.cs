@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FlexiFile.Core.Entities.Postgres;
 
 [Table("UserRefreshToken", Schema = "FlexiFile")]
+[Index("UserId", Name = "IX_UserRefreshToken_user_id")]
 public partial class UserRefreshToken
 {
     [Key]
@@ -16,10 +17,12 @@ public partial class UserRefreshToken
     [Column("user_id")]
     public Guid UserId { get; set; }
 
-    [Column("created_at", TypeName = "timestamp(3) with time zone")]
+    [Column("created_at")]
+    [Precision(3, 0)]
     public DateTime CreatedAt { get; set; }
 
-    [Column("expires_at", TypeName = "timestamp(3) with time zone")]
+    [Column("expires_at")]
+    [Precision(3, 0)]
     public DateTime ExpiresAt { get; set; }
 
     [ForeignKey("UserId")]

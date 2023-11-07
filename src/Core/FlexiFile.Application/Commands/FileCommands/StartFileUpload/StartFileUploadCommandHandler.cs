@@ -28,7 +28,11 @@ namespace FlexiFile.Application.Commands.FileCommands.StartFileUpload {
 				return ResultCommand.Unauthorized("Invalid file type.", "invalidFileType");
 			}
 
-			// TODO: Validate size limit
+			var globalMaxFileSize = await _unitOfWork.SettingRepository.GetGlobalMaximumFileSize();
+			if (globalMaxFileSize != 0 && request.FileSize > globalMaxFileSize) {
+				return ResultCommand.Unauthorized("Size exceeds maximum limit.", "fileExceedsMaximumSize");
+			}
+
 			// TODO: Validate account size limit
 
 			var file = new File {

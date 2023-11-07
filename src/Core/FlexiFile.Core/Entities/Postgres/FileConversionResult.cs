@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FlexiFile.Core.Entities.Postgres;
 
 [Table("FileConversionResult", Schema = "FlexiFile")]
+[Index("FileConversionId", Name = "IX_FileConversionResult_file_conversion_id")]
 public partial class FileConversionResult
 {
     [Key]
@@ -16,7 +17,8 @@ public partial class FileConversionResult
     [Column("file_conversion_id")]
     public Guid FileConversionId { get; set; }
 
-    [Column("creation_date", TypeName = "timestamp(3) with time zone")]
+    [Column("creation_date")]
+    [Precision(3, 0)]
     public DateTime CreationDate { get; set; }
 
     [Column("order")]

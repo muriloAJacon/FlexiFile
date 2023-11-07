@@ -10,5 +10,7 @@ namespace FlexiFile.Infrastructure.Repository {
 		}
 
 		public async Task<File?> GetUserFileByIdAsync(Guid id, Guid userId) => await Context.Files.Include(x => x.Type).FirstOrDefaultAsync(x => x.Id == id && x.OwnedByUserId == userId);
+
+		public async Task<List<File>> GetUserFilesByIdAsync(List<Guid> ids, Guid userId) => await Context.Files.Include(x => x.Type).Where(x => ids.Contains(x.Id) && x.OwnedByUserId == userId).ToListAsync();
 	}
 }

@@ -2,6 +2,7 @@ using Autofac.Extensions.DependencyInjection;
 using FlexiFile.API.Configurations;
 using FlexiFile.API.Filters;
 using FlexiFile.API.Options;
+using FlexiFile.Core.Models.ConversionParameters.RearrangeDocument;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MassTransit;
@@ -48,6 +49,8 @@ builder.Services.AddRepositories();
 
 builder.Services.AddValidatorsFromAssembly(AppDomain.CurrentDomain.Load("FlexiFile.Application"));
 
+builder.Services.AddValidatorsFromAssembly(AppDomain.CurrentDomain.Load("FlexiFile.Core"));
+
 builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddFluentValidationClientsideAdapters();
@@ -58,6 +61,10 @@ builder.Services.AddMediatR(ExtensionOptions.ConfigureMediatR)
 				.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviorFilter<,>));
 
 builder.Services.AddDependencyInjection();
+
+builder.Services.AddWorkerHub(x => ExtensionOptions.ConfigureWorkerHub(x, builder.Configuration));
+
+builder.Services.ConfigureOptions(builder.Configuration);
 
 
 var app = builder.Build();

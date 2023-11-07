@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using FlexiFile.Core.Entities.Postgres;
 using Microsoft.EntityFrameworkCore;
+using File = FlexiFile.Core.Entities.Postgres.File;
 
 namespace FlexiFile.Infrastructure.Context;
 
@@ -12,9 +13,11 @@ public partial class PostgresContext : DbContext
     {
     }
 
-    public virtual DbSet<Core.Entities.Postgres.File> Files { get; set; }
+    public virtual DbSet<File> Files { get; set; }
 
     public virtual DbSet<FileConversion> FileConversions { get; set; }
+
+    public virtual DbSet<FileConversionOrigin> FileConversionOrigins { get; set; }
 
     public virtual DbSet<FileConversionResult> FileConversionResults { get; set; }
 
@@ -32,7 +35,7 @@ public partial class PostgresContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Core.Entities.Postgres.File>(entity =>
+        modelBuilder.Entity<File>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_File");
 
@@ -54,13 +57,28 @@ public partial class PostgresContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Status).HasComment("(\"InQueue\",\"InProgress\",\"Completed\",\"Failed\")");
 
-            entity.HasOne(d => d.File).WithMany(p => p.FileConversions)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FileConversion_File_id_fk");
-
             entity.HasOne(d => d.FileTypeConversion).WithMany(p => p.FileConversions)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_FileConversion_FileTypeConversion");
+
+            entity.HasOne(d => d.User).WithMany(p => p.FileConversions)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_FileConversion_User");
+        });
+
+        modelBuilder.Entity<FileConversionOrigin>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_FileConversionOrigin");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.FileConversion).WithMany(p => p.FileConversionOrigins)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_FileConversionOrigin_FileConversion");
+
+            entity.HasOne(d => d.File).WithMany(p => p.FileConversionOrigins)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_FileConversionOrigin_File");
         });
 
         modelBuilder.Entity<FileConversionResult>(entity =>
@@ -89,9 +107,7 @@ public partial class PostgresContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_FileTypeConversion_FileType_from_type");
 
-            entity.HasOne(d => d.ToType).WithMany(p => p.FileTypeConversionToTypes)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_FileTypeConversion_FileType_to_type");
+            entity.HasOne(d => d.ToType).WithMany(p => p.FileTypeConversionToTypes).HasConstraintName("fk_FileTypeConversion_FileType_to_type");
         });
 
         modelBuilder.Entity<Setting>(entity =>

@@ -1,4 +1,5 @@
-﻿using MassTransit;
+﻿using FlexiFile.Core.OptionsBuilder;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -53,6 +54,10 @@ namespace FlexiFile.API.Options {
 		public static void ConfigureApiVersioningExplorer(ApiExplorerOptions options) {
 			options.GroupNameFormat = "'v'VVV";
 			options.SubstituteApiVersionInUrl = true;
+		}
+
+		public static void ConfigureWorkerHub(SignalRClientOptionsBuilder options, IConfiguration configuration) {
+			options.WithConnectionString(configuration.GetConnectionString("WorkerHub") ?? throw new Exception("Worker hub connection string not found"));
 		}
 	}
 }
