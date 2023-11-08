@@ -1,3 +1,134 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+html {
+    scroll-behavior: smooth;
+}
+
+@layer components {
+    .input {
+        @apply h-10 w-full rounded-[7px] border border-slate-400 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-slate-400 placeholder-shown:border-t-slate-400 focus:border-2 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-neutral-300 placeholder:select-none;
+    }
+
+    .select {
+        @apply h-10 w-full rounded-[7px] border border-slate-400 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-slate-400 placeholder-shown:border-t-slate-400 focus:border-2 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-neutral-300;
+    }
+
+    .select-arrow {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        background-position: right .75rem center;
+        background-size: 16px 12px;
+        @apply appearance-none bg-no-repeat bg-white;
+    }
+
+    .text-area {
+        @apply h-full min-h-[100px] w-full resize-none rounded-[7px] border border-slate-400 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-slate-400 placeholder-shown:border-t-slate-400 focus:border-2 focus:border-t-transparent focus:outline-0 disabled:resize-none disabled:border-0 disabled:bg-neutral-300;
+    }
+
+    .form-label {
+        @apply before:content-[''] after:content-[''] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-slate-500 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-slate-400 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-slate-400 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-slate-700 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:before:border-slate-400 peer-focus:after:border-slate-400 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-slate-700 overflow-hidden whitespace-nowrap peer-autofill:text-[11px] peer-autofill:leading-tight peer-autofill:text-slate-700 peer-disabled:peer-autofill:text-slate-700;
+    }
+
+    .input-append-button {
+        @apply !absolute right-1 top-1 z-10 select-none rounded py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none;
+    }
+
+    .card {
+        @apply relative flex flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_0_8px_-2px_rgba(0,0,0,0.1)];
+    }
+
+    .button-default {
+        @apply rounded-lg py-2 px-4 font-sans text-xs font-bold uppercase shadow-md transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none inline-block;
+    }
+
+    .button-outline {
+        @apply rounded-lg py-2 px-4 font-sans text-xs font-bold uppercase transition-all disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none;
+    }
+
+    .badge {
+        @apply relative inline-block select-none whitespace-nowrap rounded-lg py-2 px-3.5 align-baseline font-sans text-xs font-bold uppercase leading-none;
+    }
+
+    .input-invalid {
+        @apply h-10 w-full rounded-[7px] border border-red-700 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-red-700 placeholder-shown:border-t-red-700 focus:border-2 focus:border-red-700 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-neutral-300 placeholder:select-none;
+    }
+
+    .select-invalid {
+        @apply h-10 w-full rounded-[7px] border border-red-700 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-red-700 placeholder-shown:border-t-red-700 focus:border-2 focus:border-red-700 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-neutral-300;
+    }
+
+    .text-area-invalid {
+        @apply h-full min-h-[100px] w-full resize-none rounded-[7px] border border-red-700 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-red-700 placeholder-shown:border-t-red-700 focus:border-2 focus:border-t-transparent focus:outline-0 disabled:resize-none disabled:border-0 disabled:bg-neutral-300;
+    }
+
+    .form-label-invalid {
+        @apply before:content-[''] after:content-[''] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-red-700 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-red-700 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-red-700 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-red-700 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-red-700 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-red-700 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-red-700 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-slate-700 overflow-hidden;
+    }
+
+    .invalid-feedback {
+        @apply w-full mt-1 text-sm text-red-700 hidden;
+    }
+
+    .input-invalid~.invalid-feedback,.form-label-invalid~.invalid-feedback,.select-invalid~.invalid-feedback {
+        @apply block;
+    }
+
+    .tooltip {
+        @apply absolute z-50 whitespace-normal break-words rounded-lg bg-black py-1.5 px-3 font-sans text-sm font-normal text-white focus:outline-none transition-opacity duration-300 inline-flex;
+    }
+
+    ng-dropdown-panel {
+        @apply bg-white border-2 top-[40px] left-0 rounded-lg;
+    }
+
+    .ng-option {
+        @apply px-2 py-3 transition-all rounded-lg !whitespace-break-spaces;
+    }
+
+    .input-checkbox {
+        @apply relative h-5 w-5 cursor-pointer appearance-none rounded-md border transition-all;
+    }
+
+    .input-checkbox-icon {
+        @apply pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 opacity-0 transition-opacity peer-checked:opacity-100;
+    }
+
+    .label-checkbox {
+        @apply mt-px cursor-pointer select-none font-light pl-2;
+    }
+
+    .progress-bar {
+        background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+        animation: 1s linear infinite progress-bar-stripes;
+        transition: width 0.6s ease;
+        @apply bg-[length:1rem_1rem];
+    }
+}
+
+@keyframes progress-bar-stripes {
+    0% {
+        background-position-x: 1rem
+    }
+}
+
+.mat-step-icon-selected,.mat-step-icon-state-done {
+    background-color: rgb(67 160 71) !important;
+}
+
+.cell-full-height > div {
+    height: 100%;
+}
+
+.ng-option-selected {
+    background-color: #a8b8c7!important;
+    color: black;
+    border-radius: 0;
+}
+
+.ng-option-marked {
+    background-color: #f5faff;
+    border-radius: 0;
+}

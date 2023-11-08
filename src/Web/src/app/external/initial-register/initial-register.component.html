@@ -1,0 +1,93 @@
+<section class="flex relative justify-center py-24 px-5 md:px-24 xl:px-36 2xl:px-48 3xl:px-96">
+    <div class="container">
+        <div class="container flex flex-col items-center">
+            <div class="flex justify-center mb-8">
+                <img class="max-w-[80%] w-80" src="/assets/upload.svg" alt="Upload">
+            </div>
+
+			<div class="card w-[600px] max-w-full px-10 py-10">
+				<ngx-spinner color="#ffcf66" bdColor="rgba(255,255,255,0.8)" name="firstSetup" [fullScreen]="false"></ngx-spinner>
+
+				<div class="text-center mb-5">
+					<div class="text-2xl">Welcome to FlexiFile!</div>
+					<div class="text-xl">Let's setup the first account.</div>
+				</div>
+
+				<div class="mb-10" *ngIf="error">
+					<app-alert>{{ error }}</app-alert>
+				</div>
+
+				<form [formGroup]="form" (ngSubmit)="submit()">
+					<div class="mt-5">
+						<div class="relative w-full min-w-[200px]">
+							<input id="name" class="peer" [ngClass]="form.controls['name'].errors !== null && form.controls['name'].touched ? 'input-invalid' : 'input'" placeholder=" " formControlName="name" type="text" autocomplete="name">
+
+							<label for="name" [ngClass]="form.controls['name'].errors !== null && form.controls['name'].touched ? 'form-label-invalid' : 'form-label'">
+								Name
+							</label>
+
+							<div class="invalid-feedback">
+								<div *ngIf="form.controls['name'].errors?.['required']">This field is required.</div>
+								<div *ngIf="form.controls['name'].errors?.['maxlength']">The maximum length is {{ form.controls['name'].errors?.['maxlength'].requiredLength }} characters.</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="mt-5">
+						<div class="relative w-full min-w-[200px]">
+							<input id="email" class="peer" [ngClass]="form.controls['email'].errors !== null && form.controls['email'].touched ? 'input-invalid' : 'input'" placeholder=" " formControlName="email" type="email" autocomplete="email">
+
+							<label for="email" [ngClass]="form.controls['email'].errors !== null && form.controls['email'].touched ? 'form-label-invalid' : 'form-label'">
+								E-mail
+							</label>
+
+							<div class="invalid-feedback">
+								<div *ngIf="form.controls['email'].errors?.['required']">This field is required.</div>
+								<div *ngIf="form.controls['email'].errors?.['email']">Insert a valid e-mail address.</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="mt-5">
+						<div class="relative w-full min-w-[200px]">
+							<input id="password" class="peer" [ngClass]="form.controls['password'].errors !== null && form.controls['password'].touched ? 'input-invalid' : 'input'" placeholder=" " formControlName="password" type="password" autocomplete="new-password">
+
+							<label for="password" [ngClass]="form.controls['password'].errors !== null && form.controls['password'].touched ? 'form-label-invalid' : 'form-label'">
+								Password
+							</label>
+
+							<div class="invalid-feedback">
+								<div *ngIf="form.controls['password'].errors?.['required']">This field is required.</div>
+								<div *ngIf="form.controls['password'].errors?.['minlength']">The minimum length {{ form.controls['password'].errors?.['minlength'].requiredLength }} characters.</div>
+                                <div *ngIf="form.controls['password'].errors?.['noUpperCase']">Use at least one uppercase character.</div>
+                                <div *ngIf="form.controls['password'].errors?.['noNumber']">Use at least one number.</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="mt-5">
+						<div class="relative w-full min-w-[200px]">
+							<input id="confirmPassword" class="peer" [ngClass]="form.controls['confirmPassword'].errors !== null && form.controls['confirmPassword'].touched ? 'input-invalid' : 'input'" placeholder=" " formControlName="confirmPassword" type="password" autocomplete="new-password">
+
+							<label for="confirmPassword" [ngClass]="form.controls['confirmPassword'].errors !== null && form.controls['confirmPassword'].touched ? 'form-label-invalid' : 'form-label'">
+								Confirm Password
+							</label>
+
+							<div class="invalid-feedback">
+								<div *ngIf="form.controls['confirmPassword'].errors?.['required']">This field is required.</div>
+								<div *ngIf="form.controls['confirmPassword'].errors?.['notEqual']">Passwords do not match.</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="flex justify-end mt-5">
+						<button type="submit"
+							class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40">
+							<span>Create Account</span>
+						</button>
+					</div>
+				</form>
+			</div>
+        </div>
+    </div>
+</section>
