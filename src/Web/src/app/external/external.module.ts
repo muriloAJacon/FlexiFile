@@ -6,11 +6,13 @@ import { InitialRegisterComponent } from './initial-register/initial-register.co
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { SharedModule } from '../shared/shared.module';
+import { LoginComponent } from './login/login.component';
 
 
 @NgModule({
 	declarations: [
-		InitialRegisterComponent
+		InitialRegisterComponent,
+		LoginComponent
 	],
 	imports: [
 		SharedModule,

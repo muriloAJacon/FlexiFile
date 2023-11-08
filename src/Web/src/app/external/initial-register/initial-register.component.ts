@@ -97,6 +97,8 @@ export class InitialRegisterComponent implements OnInit {
 	}
 
 	submit() {
+		this.error = null;
+
 		FormsHelper.markFormAsDirty(this.form);
 		if (!this.form.valid) {
 			return;
@@ -110,7 +112,7 @@ export class InitialRegisterComponent implements OnInit {
 			password: controls['password'].value,
 		};
 
-		this.spinnerService.hide('firstSetup');
+		this.spinnerService.show('firstSetup');
 		this.userService.registerFirstSetup(registerData).subscribe({
 			next: () => {
 				this.router.navigate(['/login']);
@@ -118,6 +120,6 @@ export class InitialRegisterComponent implements OnInit {
 			error: () => {
 				this.error = "An error occured while trying to register the first setup.";
 			}
-		}).add(() => this.spinnerService.show('firstSetup'));
+		}).add(() => this.spinnerService.hide('firstSetup'));
 	}
 }
