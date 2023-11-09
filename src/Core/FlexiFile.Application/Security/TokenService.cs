@@ -30,11 +30,15 @@ namespace FlexiFile.Application.Security {
 
 			SecurityToken createToken = tokenHandler.CreateToken(tokenDescriptor);
 			string token = tokenHandler.WriteToken(createToken);
+			
+			Guid refreshToken = Guid.NewGuid();
+			DateTime refreshTokenExpirationDate = DateTime.UtcNow.AddSeconds(tokenConfigurations.FinalExpiration);
 
 			return new BearerTokenViewModel {
 				ExpiresAt = expirationDate,
-				RefreshToken = Guid.NewGuid(),
-				Token = token
+				RefreshToken = refreshToken,
+				Token = token,
+				RefreshTokenExpiresAt = refreshTokenExpirationDate
 			};
 		}
 	}

@@ -13,7 +13,7 @@
 					<div class="text-xl">Let's login into your account.</div>
 				</div>
 
-				<div class="mb-10" *ngIf="error">
+				<div class="mb-5" *ngIf="error">
 					<app-alert>{{ error }}</app-alert>
 				</div>
 
@@ -47,9 +47,10 @@
 						</div>
 					</div>
 
-					<div class="mt-2">
-                        <span class="text-sm">Don't have an account?</span>
-                        <a class="py-2 px-1 font-sans text-sm font-bold disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none text-blue-500" routerLink="/register">Register here.</a>
+					<div class="mt-2 text-sm">
+                        <span>Don't have an account? </span>
+                        <a *ngIf="anonymousRegisterAllowed" class="py-2 px-1 font-sans font-bold disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none text-blue-500" routerLink="/register">Register here.</a>
+						<span *ngIf="!anonymousRegisterAllowed">Contact an administrator.</span>
                     </div>
 
 					<div class="flex justify-end mt-5">
