@@ -13,6 +13,10 @@
 					<div class="text-xl">Let's login into your account.</div>
 				</div>
 
+				<div class="mb-5" *ngIf="success">
+					<app-alert [type]="AlertType.Success">{{ success }}</app-alert>
+				</div>
+
 				<div class="mb-5" *ngIf="error">
 					<app-alert>{{ error }}</app-alert>
 				</div>

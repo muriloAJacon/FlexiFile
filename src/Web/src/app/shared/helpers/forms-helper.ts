@@ -28,4 +28,24 @@ export class FormsHelper {
 			form.removeControl(control);
 		}
 	}
+
+	public static strongPasswordValidator(control: AbstractControl): ValidationErrors | null {
+		const value = control.value as string | null;
+
+		if (value === null) {
+			return null;
+		}
+
+		let errors: ValidationErrors = {};
+
+		if (!/[A-Z]/.test(value)) {
+			errors["noUpperCase"] = true;
+		}
+
+		if (!/[0-9]/.test(value)) {
+			errors["noNumber"] = true;
+		}
+
+		return errors;
+	}
 }

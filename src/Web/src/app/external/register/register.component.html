@@ -6,11 +6,11 @@
             </div>
 
 			<div class="card w-[600px] max-w-full px-10 py-10">
-				<ngx-spinner color="#ffcf66" bdColor="rgba(255,255,255,0.8)" name="firstSetup" [fullScreen]="false"></ngx-spinner>
+				<ngx-spinner color="#ffcf66" bdColor="rgba(255,255,255,0.8)" name="register" [fullScreen]="false"></ngx-spinner>
 
 				<div class="text-center mb-5">
 					<div class="text-2xl">Welcome to FlexiFile!</div>
-					<div class="text-xl">Let's setup the first account.</div>
+					<div class="text-xl">Let's create your account.</div>
 				</div>
 
 				<div class="mb-5" *ngIf="error">
@@ -80,10 +80,15 @@
 						</div>
 					</div>
 
+					<div class="mt-2 text-sm">
+                        <span>Already have an account? </span>
+                        <a class="py-2 px-1 font-sans font-bold disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none text-blue-500" routerLink="/login">Login here.</a>
+                    </div>
+
 					<div class="flex justify-end mt-5">
 						<button type="submit"
 							class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40">
-							<span>Create Account</span>
+							<span>Register</span>
 						</button>
 					</div>
 				</form>

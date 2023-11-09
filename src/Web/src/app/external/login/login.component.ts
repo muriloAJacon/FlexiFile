@@ -1,11 +1,13 @@
+import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DateTime } from 'luxon';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { forkJoin } from 'rxjs';
 import { FormsHelper } from 'src/app/shared/helpers/forms-helper';
+import { AlertType } from 'src/app/shared/models/alert-type.enum';
 import { LoginRequest } from 'src/app/shared/models/auth/login-request.model';
 import { LoginResponse } from 'src/app/shared/models/auth/login-response.model';
 import { GetFirstSetupResponse } from 'src/app/shared/models/user/get-first-setup-response.model';
@@ -22,7 +24,9 @@ import { UserService } from 'src/app/shared/services/user.service';
 export class LoginComponent {
 	public form: FormGroup;
 
+	public success: string | null = null;
 	public error: string | null = null;
+	public AlertType = AlertType;
 
 	public anonymousRegisterAllowed: boolean = false;
 
@@ -33,7 +37,9 @@ export class LoginComponent {
 		private router: Router,
 		private authService: AuthService,
 		private tokenService: TokenService,
-		private settingsService: SettingsService
+		private settingsService: SettingsService,
+		private route: ActivatedRoute,
+		private location: Location
 	) {
 		this.form = _formBuilder.group({
 			email: [null, Validators.compose([
@@ -48,6 +54,23 @@ export class LoginComponent {
 
 	ngOnInit() {
 		this.loadSettings();
+
+		this.route.queryParamMap.subscribe(params => {
+			const messageCode = params.get('messageCode');
+			if (messageCode !== null) {
+				this.loadSuccessMessage(messageCode);
+				this.location.replaceState('/login');
+			}
+		});
+	}
+
+	loadSuccessMessage(messageCode: string) {
+		const messages: { [key: string]: string } = {
+			"firstSetupCompleted": "First setup was completed successfully. You can now login.",
+			"accountCreated": "Your account was succesfully created. You can now login.",
+			"accountCreatedAwaitingApproval": "Your account was succesfully created. You may wait for the approval of an administrator before logging in.",
+		};
+		this.success = messages[messageCode];
 	}
 
 	loadSettings() {
@@ -70,6 +93,7 @@ export class LoginComponent {
 	}
 
 	submit() {
+		this.success = null;
 		this.error = null;
 
 		FormsHelper.markFormAsDirty(this.form);

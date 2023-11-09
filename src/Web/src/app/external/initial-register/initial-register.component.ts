@@ -34,7 +34,7 @@ export class InitialRegisterComponent implements OnInit {
 			])],
 			password: [null, Validators.compose([
 				Validators.required,
-				this.strongPasswordValidator
+				FormsHelper.strongPasswordValidator
 			])],
 			confirmPassword: [null, Validators.compose([
 				Validators.required,
@@ -61,26 +61,6 @@ export class InitialRegisterComponent implements OnInit {
 				this.error = "An error occured while trying to get the first setup.";
 			}
 		}).add(() => this.spinnerService.hide('firstSetup'));
-	}
-
-	strongPasswordValidator(control: AbstractControl): ValidationErrors | null {
-		const value = control.value as string | null;
-
-		if (value === null) {
-			return null;
-		}
-
-		let errors: ValidationErrors = {};
-
-		if (!/[A-Z]/.test(value)) {
-			errors["noUpperCase"] = true;
-		}
-
-		if (!/[0-9]/.test(value)) {
-			errors["noNumber"] = true;
-		}
-
-		return errors;
 	}
 	
 	equalPasswordValidator(control: AbstractControl): ValidationErrors | null {

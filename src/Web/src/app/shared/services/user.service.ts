@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { GetFirstSetupResponse } from '../models/user/get-first-setup-response.model';
 import { CreateFirstSetupRequest } from '../models/user/create-first-setup-request.model';
+import { CreateUserRequest } from '../models/user/create-user-request.model';
+import { User } from '../models/user/user.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -19,5 +21,9 @@ export class UserService {
 
 	public registerFirstSetup(data: CreateFirstSetupRequest) {
 		return this.http.post(`${this.baseURI}/firstSetup`, data);
+	}
+
+	public createUser(data: CreateUserRequest) {
+		return this.http.post<User>(`${this.baseURI}`, data);
 	}
 }
