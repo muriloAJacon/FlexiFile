@@ -111,10 +111,11 @@ export class LoginComponent {
 		this.spinnerService.show('login');
 		this.authService.login(loginData).subscribe({
 			next: (loginInfo: LoginResponse) => {
-				this.tokenService.saveJwtToken(loginInfo.token, DateTime.fromISO(loginInfo.expiresAt));
-				this.tokenService.saveRefreshToken(loginInfo.refreshToken, DateTime.fromISO(loginInfo.refreshTokenExpiresAt));
+				this.tokenService.saveLoginResponseData(loginInfo);
 
-				this.router.navigate(['/upload']);
+				const redirectUrl: string | undefined = this.route.snapshot.queryParams['redirect'];
+				
+				this.router.navigate([redirectUrl ?? '/home']);
 			},
 			error: (error: HttpErrorResponse) => {
 				this.error = error.error?.message ?? "Login failed.";

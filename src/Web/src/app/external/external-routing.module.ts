@@ -20,11 +20,7 @@ const routes: Routes = [
 		path: "register",
 		component: RegisterComponent,
 		data: { title: `Register · ${environment.baseTitle}` }
-	},
-	{
-		path: "**",
-		redirectTo: "login"
-	},
+	}
 ];
 
 @NgModule({
