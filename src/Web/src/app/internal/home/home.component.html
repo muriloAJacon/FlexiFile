@@ -26,6 +26,22 @@
 				</div>
 			</div>
 
+			<div class="card w-[600px] max-w-full px-5 py-5 my-5" *ngFor="let file of recentFiles">
+				<div class="flex justify-between mb-3">
+					<span>Uploading {{ file.fileName }}</span>
+
+					<button type="button" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40">
+						<fa-icon class="mr-2" [icon]="['fas', 'shuffle']"></fa-icon>
+						<span>Convert</span>
+					</button>
+				</div>
+
+				<div class="flex-start flex relative h-4 overflow-hidden rounded bg-slate-200 font-sans text-xs font-medium w-full">
+					<div class="flex h-full items-baseline justify-center overflow-hidden break-all bg-blue-700 text-white progress-bar" [style.width]="file.uploadPercentageComplete + '%'"></div>
+					<span class="absolute inset-0 text-center text-white">{{ file.uploadPercentageComplete }}%</span>
+				</div>
+			</div>
+
 			<button type="button" class="mt-5 text-sm">
 				<fa-icon class="mr-2" [icon]="['fas', 'clock-rotate-left']"></fa-icon>
 				<span>Show older files</span>

@@ -7,6 +7,14 @@ import { NgxSpinnerService } from 'ngx-spinner';
 	styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
+
+	recentFiles: any[] = [
+		{
+			fileName: "Test.pdf",
+			uploadPercentageComplete: 50
+		}
+	];
+
 	constructor(
 		private spinnerService: NgxSpinnerService,
 	) {

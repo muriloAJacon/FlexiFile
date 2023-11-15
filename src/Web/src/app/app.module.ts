@@ -36,6 +36,7 @@ export class AppModule {
 		library.addIcons(
 			FontAwesomeSolid.faCloudUpload,
 			FontAwesomeSolid.faClockRotateLeft,
+			FontAwesomeSolid.faShuffle,
 		);
 	}
 }
