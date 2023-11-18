@@ -7,5 +7,6 @@
 		public DateTime SubmittedAt { get; set; }
 		public bool FinishedUpload { get; set; }
 		public DateTime? FinishedUploadAt { get; set; }
+		public string MimeType { get; set; } = null!;
 	}
 }

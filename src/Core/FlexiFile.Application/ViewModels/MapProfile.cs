@@ -10,13 +10,15 @@ namespace FlexiFile.Application.ViewModels {
 	public class MapProfile : Profile {
 		public MapProfile() {
 			CreateMap<File, FileViewModel>()
-				.ForMember(x => x.TypeDescription, opt => opt.MapFrom(src => src.Type.Description));
+				.ForMember(x => x.TypeDescription, opt => opt.MapFrom(src => src.Type.Description))
+				.ForMember(x => x.MimeType, opt => opt.MapFrom(src => src.Type.MimeTypes.First()));
 
 			CreateMap<User, UserViewModel>();
 
 			CreateMap<FileConversion, FileConversionViewModel>();
 
-			CreateMap<FileTypeConversion, FileTypeConversionViewModel>();
+			CreateMap<FileTypeConversion, FileTypeConversionViewModel>()
+				.ForMember(x => x.ToTypeDescription, opt => opt.MapFrom(src => src.ToType == null ? null : src.ToType.Description));
 		}
 	}
 }

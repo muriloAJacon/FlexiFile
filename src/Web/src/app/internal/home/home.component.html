@@ -26,17 +26,21 @@
 				</div>
 			</div>
 
-			<div class="card w-[600px] max-w-full px-5 py-5 my-5" *ngFor="let file of recentFiles">
-				<div class="flex justify-between mb-3">
-					<span>Uploading {{ file.fileName }}</span>
+			<div class="card w-[600px] max-w-full px-5 py-5 mt-5" *ngFor="let file of recentFiles">
+				<div class="flex justify-between items-center">
+					<span>{{ getStatusText(file) }}</span>
 
-					<button type="button" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40">
-						<fa-icon class="mr-2" [icon]="['fas', 'shuffle']"></fa-icon>
+					<button (click)="openConvertModal(file.fileModel)" *ngIf="[InternalFileStatus.Uploading, InternalFileStatus.Complete].includes(file.status)" type="button" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
+						<fa-icon [icon]="['fas', 'shuffle']"></fa-icon>
 						<span>Convert</span>
 					</button>
 				</div>
 
-				<div class="flex-start flex relative h-4 overflow-hidden rounded bg-slate-200 font-sans text-xs font-medium w-full">
+				<div class="mt-5" *ngIf="file.error">
+					<app-alert>{{ file.error }}</app-alert>
+				</div>
+
+				<div *ngIf="file.status === InternalFileStatus.Uploading" class="mt-3 flex-start flex relative h-4 overflow-hidden rounded bg-slate-200 font-sans text-xs font-medium w-full">
 					<div class="flex h-full items-baseline justify-center overflow-hidden break-all bg-blue-700 text-white progress-bar" [style.width]="file.uploadPercentageComplete + '%'"></div>
 					<span class="absolute inset-0 text-center text-white">{{ file.uploadPercentageComplete }}%</span>
 				</div>
@@ -49,3 +53,15 @@
         </div>
     </div>
 </section>
+
+<app-modal #convertModal>
+	<span title>Choose a file to convert to</span>
+	
+	<div>
+		<ngx-spinner color="#ffcf66" bdColor="rgba(255,255,255,0.8)" name="convertType" [fullScreen]="false"></ngx-spinner>
+
+		<div *ngFor="let conversion of conversions">
+			<button (click)="requestFileConvert(conversion.id)" class="button-outline">{{ conversion.toTypeDescription }} - {{ conversion.description }}</button>
+		</div>
+	</div>
+</app-modal>

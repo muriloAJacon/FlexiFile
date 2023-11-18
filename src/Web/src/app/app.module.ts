@@ -6,11 +6,12 @@ import { AppComponent } from './app.component';
 import { FaConfig, FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { SharedModule } from './shared/shared.module';
 import { ExternalModule } from './external/external.module';
 import { InternalModule } from './internal/internal.module';
 import * as FontAwesomeSolid from '@fortawesome/free-solid-svg-icons';
+import { AuthInterceptor } from './shared/helpers/auth.interceptor';
 
 @NgModule({
 	declarations: [
@@ -27,7 +28,10 @@ import * as FontAwesomeSolid from '@fortawesome/free-solid-svg-icons';
 		ExternalModule,
 		InternalModule
 	],
-	providers: [],
+	providers: [
+		AuthInterceptor,
+		{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+	],
 	bootstrap: [AppComponent]
 })
 export class AppModule {
@@ -37,6 +41,7 @@ export class AppModule {
 			FontAwesomeSolid.faCloudUpload,
 			FontAwesomeSolid.faClockRotateLeft,
 			FontAwesomeSolid.faShuffle,
+			FontAwesomeSolid.faTimes,
 		);
 	}
 }
