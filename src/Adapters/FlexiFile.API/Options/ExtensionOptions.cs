@@ -46,9 +46,6 @@ namespace FlexiFile.API.Options {
 			options.DefaultApiVersion = new ApiVersion(1, 0);
 			options.AssumeDefaultVersionWhenUnspecified = true;
 			options.ReportApiVersions = true;
-			options.ApiVersionReader = ApiVersionReader.Combine(new UrlSegmentApiVersionReader(),
-															new HeaderApiVersionReader("x-api-version"),
-															new MediaTypeApiVersionReader("x-api-version"));
 		}
 
 		public static void ConfigureApiVersioningExplorer(ApiExplorerOptions options) {

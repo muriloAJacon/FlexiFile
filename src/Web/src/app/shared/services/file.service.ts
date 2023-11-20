@@ -15,6 +15,10 @@ export class FileService {
 
 	private baseURI = `${environment.baseURI}/v1/file`;
 
+	public getFile(id: string) {
+		return this.http.get<FileModel>(`${this.baseURI}/${id}`);
+	}
+
 	public startFileUpload(data: StartFileUploadRequest) {
 		return this.http.post<FileModel>(`${this.baseURI}/start`, data);
 	}

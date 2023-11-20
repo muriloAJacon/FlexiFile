@@ -1,3 +1,5 @@
+import { FileConversion } from "../file-conversion/file-conversion.model";
+
 export interface FileModel {
 	id: string;
 	typeDescription: string;
@@ -7,4 +9,5 @@ export interface FileModel {
 	finishedUpload: boolean;
 	finishedUploadAt: string;
 	mimeType: string;
+	conversions: FileConversion[];
 }

@@ -109,9 +109,12 @@ namespace FlexiFile.Application.Commands.ConvertCommands.RequestConvertCommand {
 			_unitOfWork.FileConversionRepository.Add(fileConversionRequest);
 			await _unitOfWork.Commit();
 
-			_ = _convertHubClient.SendFileConvertRequestedAsync(new FileConvertRequestedInfo {
-				ConversionId = conversionId
-			});
+			// TODO: Handle deadlock - if files finish uploading after getting files from database
+			if (files.All(x => x.FinishedUpload)) {
+				_ = _convertHubClient.SendFileConvertRequestedAsync(new FileConvertRequestedInfo {
+					ConversionId = conversionId
+				});
+			}
 
 			return ResultCommand.Created<FileConversion, FileConversionViewModel>(fileConversionRequest);
 		}

@@ -42,6 +42,8 @@ export class AppModule {
 			FontAwesomeSolid.faClockRotateLeft,
 			FontAwesomeSolid.faShuffle,
 			FontAwesomeSolid.faTimes,
+			FontAwesomeSolid.faArrowUpRightFromSquare,
+			FontAwesomeSolid.faDownload,
 		);
 	}
 }

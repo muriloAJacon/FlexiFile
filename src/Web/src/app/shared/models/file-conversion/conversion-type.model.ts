@@ -1,5 +1,5 @@
 export interface ConversionType {
 	id: number;
-	toTypeDescription: string;
+	toTypeDescription: string | null;
 	description: string;
 }

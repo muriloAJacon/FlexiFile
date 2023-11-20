@@ -5,9 +5,12 @@ import { catchError, last, tap } from 'rxjs';
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
 import { ConversionType } from 'src/app/shared/models/file-conversion/conversion-type.model';
 import { FileConversionRequest } from 'src/app/shared/models/file-conversion/file-conversion-request.model';
+import { FileConversion } from 'src/app/shared/models/file-conversion/file-conversion.model';
+import { ConversionStatus } from 'src/app/shared/models/file/conversion-status.enum';
 import { FileModel } from 'src/app/shared/models/file/file-model.model';
 import { InternalFileStatus } from 'src/app/shared/models/file/internal-file-status.enum';
 import { FileService } from 'src/app/shared/services/file.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
 	selector: 'app-home',
@@ -24,6 +27,12 @@ export class HomeComponent {
 
 	public conversions: ConversionType[] = [];
 	public selectedFile: FileModel | null = null;
+
+	public ConversionStatus = ConversionStatus;
+
+	public convertModalError: string | null = null;
+
+	public baseFilePath = environment.baseFilePath
 
 	constructor(
 		private spinnerService: NgxSpinnerService,
@@ -116,6 +125,9 @@ export class HomeComponent {
 	}
 
 	openConvertModal(fileModel: FileModel) {
+		this.convertModalError = null;
+		this.conversions = [];
+
 		this.convertModal.open();
 		this.spinnerService.show('convertType');
 		this.fileService.getAvailableConversions(fileModel.mimeType).subscribe({
@@ -123,13 +135,15 @@ export class HomeComponent {
 				this.conversions = conversions;
 				this.selectedFile = fileModel;
 			},
-			error: () => {
-				// TODO: HANDLE
+			error: (error) => {
+				this.convertModalError = error.error?.message ?? "Failed to load available conversions"
 			}
 		}).add(() => this.spinnerService.hide('convertType'));
 	}
 
 	requestFileConvert(conversionId: number) {
+		this.convertModalError = null;
+
 		const file = this.selectedFile!;
 		const convertRequest: FileConversionRequest = {
 			fileIds: [file.id],
@@ -139,13 +153,33 @@ export class HomeComponent {
 
 		this.spinnerService.show('convertType');
 		this.fileService.convertFile(convertRequest).subscribe({
-			next: () => {
-				// TODO: HANDLE
+			next: (fileConversion: FileConversion) => {
+				this.updateFile(file.id, fileConversion.id);
 				this.convertModal.close();
 			},
-			error: () => {
-				// TODO: HANDLE
+			error: (error) => {
+				this.convertModalError = error.error?.message ?? "Failed to request convert for file"
 			}
 		}).add(() => this.spinnerService.hide('convertType'));
+	}
+
+	// TODO: This is a temporary method before SignalR is implemented
+	updateFile(fileId: string, conversionId: string) {
+		const interval = setInterval(() => {
+			this.fileService.getFile(fileId).subscribe({
+				next: (fileModel) => {
+					const file = this.recentFiles.find(f => f.fileModel.id == fileId);
+					if (file) {
+						file.fileModel = fileModel;
+						const conversion = fileModel.conversions.find(c => c.id == conversionId);
+						if (conversion && [ConversionStatus.Completed, ConversionStatus.Failed].includes(conversion.status)) {
+							clearInterval(interval);
+						}
+					}
+
+					this.recentFiles = [...this.recentFiles];
+				}
+			});
+		}, 1000);
 	}
 }
