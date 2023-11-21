@@ -44,6 +44,7 @@ export class AppModule {
 			FontAwesomeSolid.faTimes,
 			FontAwesomeSolid.faArrowUpRightFromSquare,
 			FontAwesomeSolid.faDownload,
+			FontAwesomeSolid.faFileLines,
 		);
 	}
 }

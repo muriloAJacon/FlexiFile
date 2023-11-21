@@ -1,5 +1,6 @@
-import { HttpEvent, HttpEventType } from '@angular/common/http';
+import { HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 import { Component, ViewChild } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { catchError, last, tap } from 'rxjs';
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
@@ -34,11 +35,19 @@ export class HomeComponent {
 
 	public baseFilePath = environment.baseFilePath
 
+	public selectedFileConversion: ConversionType | null = null;
+	public modalStep: ConvertModalStep = ConvertModalStep.Select;
+	public ConvertModalStep = ConvertModalStep;
+
+	public filesSelectForm: FormArray<FormGroup>;
+	public pagesSelectForm: FormControl<string | null> = new FormControl<string | null>(null);
+
 	constructor(
 		private spinnerService: NgxSpinnerService,
-		private fileService: FileService
+		private fileService: FileService,
+		private formBuilder: FormBuilder
 	) {
-
+		this.filesSelectForm = formBuilder.array<FormGroup>([]);
 	}
 
 	ngOnInit() {
@@ -56,7 +65,6 @@ export class HomeComponent {
 	uploadFiles(files: FileList) {
 		for (let i = 0; i < files.length; i++) {
 			const file = files[i];
-			console.log(file)
 
 			const fileProgress = {
 				fileName: file.name,
@@ -66,7 +74,7 @@ export class HomeComponent {
 				fileModel: null
 			};
 			this.recentFiles.unshift(fileProgress);
-			
+
 			this.fileService.startFileUpload({
 				fileName: file.name,
 				fileSize: file.size,
@@ -96,10 +104,10 @@ export class HomeComponent {
 				return error;
 			})
 			).subscribe({
-				next: () => {
-					// TODO: GET FILE MODEL AGAIN FROM RESPONSE
-					// fileProgress.fileModel = fileModel;
+				next: (response) => {
 					fileProgress.status = InternalFileStatus.Complete;
+					const data = response as HttpResponse<FileModel>;
+					fileProgress.fileModel = data.body;
 				}
 			});
 	}
@@ -125,6 +133,7 @@ export class HomeComponent {
 	}
 
 	openConvertModal(fileModel: FileModel) {
+		this.modalStep = ConvertModalStep.Select;
 		this.convertModalError = null;
 		this.conversions = [];
 
@@ -141,20 +150,84 @@ export class HomeComponent {
 		}).add(() => this.spinnerService.hide('convertType'));
 	}
 
-	requestFileConvert(conversionId: number) {
+	selectFileConversion(conversion: ConversionType) {
+		this.convertModalError = null;
+		const selectedFile = this.selectedFile!;
+		this.selectedFileConversion = conversion;
+
+		if (conversion.minNumberFiles !== null && conversion.minNumberFiles > 1) {
+			this.modalStep = ConvertModalStep.MultiSelect;
+			
+			const files = this.recentFiles.filter(x => x.fileModel !== null);
+			this.filesSelectForm = this.formBuilder.array(files.map(x => this.formBuilder.group({
+				fileId: [x.fileModel.id],
+				selected: [x.fileModel.id == selectedFile.id ? true : false],
+				position: [x.fileModel.id == selectedFile.id ? 1 : null]
+			})));
+		} else if (conversion.modelClassName !== null) {
+			this.modalStep = ConvertModalStep.PageNumber;
+			this.pagesSelectForm.reset();
+		} else {
+			this.requestFileConvert([selectedFile.id], conversion.id);
+		}
+	}
+
+	getFile(fileId: string) {
+		return this.recentFiles.find(x => x.fileModel?.id == fileId);
+	}
+
+	getOrderArray(): number[] {
+		const selectedFiles = this.filesSelectForm.controls.filter(x => x.controls['selected'].value);
+		return selectedFiles.map((x, idx) => idx + 1);
+	}
+
+	getControl(control: AbstractControl) {
+		return control as FormControl;
+	}
+
+	submitMultiSelect() {
 		this.convertModalError = null;
 
-		const file = this.selectedFile!;
+		const selectedFiles = this.filesSelectForm.controls.filter(x => x.controls['selected'].value);
+		if (selectedFiles.length < 2) {
+			this.convertModalError = 'At least two files must be selected';
+			return;
+		}
+
+		const fileIds = selectedFiles.sort((a, b) => a.controls['position'].value - b.controls['position'].value).map(x => x.controls['fileId'].value);
+		this.requestFileConvert(fileIds, this.selectedFileConversion!.id);
+	}
+
+	submitPageNumbers() {
+		const value = this.pagesSelectForm.value;
+
+		if (value === null || value === '') {
+			this.convertModalError = 'Please enter at least one page';
+			return;
+		}
+
+		const pages = value.split(',').map(x => parseInt(x));
+
+		const parameters = {
+			originalPageNumbers: pages
+		};
+
+		this.requestFileConvert([this.selectedFile!.id], this.selectedFileConversion!.id, parameters);
+	}
+
+	requestFileConvert(fileIds: string[], conversionId: number, extraParameters: any | null = null) {
+		this.convertModalError = null;
+
 		const convertRequest: FileConversionRequest = {
-			fileIds: [file.id],
+			fileIds: fileIds,
 			conversionId,
-			extraParameters: null
+			extraParameters: extraParameters
 		};
 
 		this.spinnerService.show('convertType');
 		this.fileService.convertFile(convertRequest).subscribe({
 			next: (fileConversion: FileConversion) => {
-				this.updateFile(file.id, fileConversion.id);
+				this.updateFile(this.selectedFile!.id, fileConversion.id);
 				this.convertModal.close();
 			},
 			error: (error) => {
@@ -182,4 +255,10 @@ export class HomeComponent {
 			});
 		}, 1000);
 	}
+}
+
+enum ConvertModalStep {
+	Select = 'Select',
+	MultiSelect = 'MultiSelect',
+	PageNumber = 'PageNumber'
 }
