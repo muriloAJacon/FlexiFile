@@ -103,10 +103,82 @@
 				</div>
 			</div>
 
-			<button type="button" class="mt-5 text-sm">
+			<button *ngIf="!showOlderFiles" (click)="loadOlderFiles()" type="button" class="mt-5 text-sm">
 				<fa-icon class="mr-2" [icon]="['fas', 'clock-rotate-left']"></fa-icon>
 				<span>Show older files</span>
 			</button>
+
+			<div *ngIf="showOlderFiles">
+				<ngx-spinner color="#ffcf66" bdColor="rgba(255,255,255,0.8)" name="olderFiles" [fullScreen]="false"></ngx-spinner>
+
+				<div class="card w-[600px] max-w-full px-5 py-5 mt-5" *ngFor="let file of olderFiles">
+					<div class="flex justify-between items-center gap-x-2">
+						<span>{{ file.originalName }}</span>
+
+						<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + file.id" target="_blank">
+							<fa-icon [icon]="['fas', 'arrow-up-right-from-square']"></fa-icon>
+							<span>Open</span>
+						</a>
+
+						<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + file.id + '?download=true'" target="_blank">
+							<fa-icon [icon]="['fas', 'download']"></fa-icon>
+							<span>Download</span>
+						</a>
+
+						<button (click)="openConvertModal(file)" type="button" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
+							<fa-icon [icon]="['fas', 'shuffle']"></fa-icon>
+							<span>Convert</span>
+						</button>
+					</div>
+
+					<hr class="my-3" *ngIf="file.conversions.length > 0">
+
+					<div *ngFor="let conversion of file.conversions; let idx = index">
+						<hr class="my-3" *ngIf="idx + 1 !== file.conversions.length">
+
+						<div class="flex justify-between items-center">
+							<div>
+								<strong>Conversion #{{ idx + 1}}</strong>
+								<span>: </span>
+								<ng-container [ngSwitch]="conversion.status">
+									<span *ngSwitchCase="ConversionStatus.AwaitingQueue">Awaiting queue...</span>
+									<span *ngSwitchCase="ConversionStatus.InQueue">In queue...</span>
+									<span *ngSwitchCase="ConversionStatus.InProgress">Converting... {{ conversion.percentageComplete }}</span>
+									<span *ngSwitchCase="ConversionStatus.Failed">Conversion failed, check the logs for more details</span>
+									<span *ngSwitchCase="ConversionStatus.Completed">Conversion complete</span>
+								</ng-container>
+							</div>
+							<div class="flex gap-x-2" *ngIf="conversion.fileResults.length === 1 && conversion.status === ConversionStatus.Completed">
+								<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + conversion.fileResults[0].id" target="_blank">
+									<fa-icon [icon]="['fas', 'arrow-up-right-from-square']"></fa-icon>
+									<span>Open</span>
+								</a>
+								<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + conversion.fileResults[0].id + '?download=true'" target="_blank">
+									<fa-icon [icon]="['fas', 'download']"></fa-icon>
+									<span>Download</span>
+								</a>
+							</div>
+						</div>
+
+						<div *ngIf="conversion.fileResults.length > 1 && conversion.status === ConversionStatus.Completed">
+							<div *ngFor="let result of conversion.fileResults; let idx = index" class="flex justify-between items-center gap-x-2 mt-3">
+								<span>File #{{ idx + 1 }}</span>
+	
+								<div class="flex gap-x-2">
+									<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + result.id" target="_blank">
+										<fa-icon [icon]="['fas', 'arrow-up-right-from-square']"></fa-icon>
+										<span>Open</span>
+									</a>
+									<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + result.id + '?download=true'" target="_blank">
+										<fa-icon [icon]="['fas', 'download']"></fa-icon>
+										<span>Download</span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
         </div>
     </div>
 </section>
@@ -183,7 +255,7 @@
 				<div class="mb-3">
 					Insert the number of the pages (comma separated) in the order you desire
 				</div>
-				
+
 				<div class="relative w-full min-w-[200px]">
 					<input id="pagesSelectForm" class="peer input" placeholder=" " [formControl]="pagesSelectForm">
 

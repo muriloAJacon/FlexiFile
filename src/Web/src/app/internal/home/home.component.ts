@@ -42,6 +42,9 @@ export class HomeComponent {
 	public filesSelectForm: FormArray<FormGroup>;
 	public pagesSelectForm: FormControl<string | null> = new FormControl<string | null>(null);
 
+	public showOlderFiles = false;
+	public olderFiles: FileModel[] = [];
+
 	constructor(
 		private spinnerService: NgxSpinnerService,
 		private fileService: FileService,
@@ -110,6 +113,21 @@ export class HomeComponent {
 					fileProgress.fileModel = data.body;
 				}
 			});
+	}
+
+	loadOlderFiles() {
+		this.showOlderFiles = true;
+		const ignoreIds = this.recentFiles.filter(x => x.fileModel !== null).map(x => x.fileModel.id);
+
+		this.spinnerService.show('olderFiles');
+		this.fileService.getFiles(ignoreIds).subscribe({
+			next: (files) => {
+				this.olderFiles = files;
+			},
+			error: (error) => {
+				// TODO: HANDLE
+			}
+		}).add(() => this.spinnerService.hide('olderFiles'));
 	}
 
 	getStatusText(file: any) {

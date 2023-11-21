@@ -19,6 +19,14 @@ export class FileService {
 		return this.http.get<FileModel>(`${this.baseURI}/${id}`);
 	}
 
+	public getFiles(ignoreFileIds: string[]) {
+		return this.http.get<FileModel[]>(this.baseURI, {
+			params: {
+				ignoreIdsString: ignoreFileIds.join(',')
+			}
+		});
+	}
+
 	public startFileUpload(data: StartFileUploadRequest) {
 		return this.http.post<FileModel>(`${this.baseURI}/start`, data);
 	}

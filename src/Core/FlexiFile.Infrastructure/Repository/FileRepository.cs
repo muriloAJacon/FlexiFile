@@ -22,6 +22,14 @@ namespace FlexiFile.Infrastructure.Repository {
 																										 .Where(x => ids.Contains(x.Id) && x.OwnedByUserId == userId)
 																										 .ToListAsync();
 
+		public async Task<List<File>> GetUploadedUserFilesWithExceptionsAsync(List<Guid> ids, Guid userId) => await Context.Files.Include(x => x.Type)
+																										 .Include(x => x.FileConversionOrigins)
+																										 .ThenInclude(x => x.FileConversion)
+																										 .ThenInclude(x => x.FileConversionResults)
+																										 .Where(x => !ids.Contains(x.Id) && x.OwnedByUserId == userId && x.FinishedUpload)
+																										 .OrderByDescending(x => x.SubmittedAt)
+																										 .ToListAsync();
+
 		public new async Task<File?> GetByIdAsync(Guid id) => await Context.Files.Include(x => x.Type).SingleOrDefaultAsync(x => x.Id == id);
 	}
 }
