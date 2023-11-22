@@ -19,6 +19,7 @@ export class TokenService {
 
 	signOut(): void {
 		this.cookieService.delete(this.SESSION_TOKEN, '/');
+		this.cookieService.delete(this.REFRESH_TOKEN, '/');
 		this.cookieService.delete(this.USER_INFO, '/');
 	}
 

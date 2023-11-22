@@ -28,6 +28,7 @@ namespace FlexiFile.Infrastructure.Repository {
 																										 .ThenInclude(x => x.FileConversionResults)
 																										 .Where(x => !ids.Contains(x.Id) && x.OwnedByUserId == userId && x.FinishedUpload)
 																										 .OrderByDescending(x => x.SubmittedAt)
+																										 .AsSplitQuery()
 																										 .ToListAsync();
 
 		public new async Task<File?> GetByIdAsync(Guid id) => await Context.Files.Include(x => x.Type).SingleOrDefaultAsync(x => x.Id == id);

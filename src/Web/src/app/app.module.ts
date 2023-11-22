@@ -45,6 +45,10 @@ export class AppModule {
 			FontAwesomeSolid.faArrowUpRightFromSquare,
 			FontAwesomeSolid.faDownload,
 			FontAwesomeSolid.faFileLines,
+			FontAwesomeSolid.faFloppyDisk,
+			FontAwesomeSolid.faAddressCard,
+			FontAwesomeSolid.faBan,
+			FontAwesomeSolid.faUnlock,
 		);
 	}
 }

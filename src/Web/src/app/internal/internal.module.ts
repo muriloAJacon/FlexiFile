@@ -9,13 +9,16 @@ import { SharedModule } from '../shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { DragDropDirective } from './drag-drop/drag-drop.directive';
+import { SettingsComponent } from './settings/settings.component';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 
 @NgModule({
 	declarations: [
 		HomeComponent,
 		NavbarComponent,
-		DragDropDirective
+		DragDropDirective,
+		SettingsComponent
 	],
 	imports: [
 		SharedModule,
@@ -23,7 +26,8 @@ import { DragDropDirective } from './drag-drop/drag-drop.directive';
 		InternalRoutingModule,
 		ReactiveFormsModule,
 		NgxSpinnerModule,
-		FontAwesomeModule
+		FontAwesomeModule,
+		NgxDatatableModule
 	]
 })
 export class InternalModule { }
