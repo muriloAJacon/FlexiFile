@@ -22,9 +22,9 @@ namespace FlexiFile.API.Configurations {
 			using var scope = app.Services.CreateScope();
 			using var context = scope.ServiceProvider.GetRequiredService<PostgresContext>();
 
-			if (context.Database.GetPendingMigrations().Any()) {
-				context.Database.Migrate();
-			}
+			//if (context.Database.GetPendingMigrations().Any()) {
+			//	context.Database.Migrate();
+			//}
 		}
 	}
 }
