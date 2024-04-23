@@ -1,9 +1,7 @@
 ﻿using FlexiFile.Core.OptionsBuilder;
-using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
-using RabbitMQ.Client;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Text.Json.Serialization;
 
@@ -21,16 +19,6 @@ namespace FlexiFile.API.Options {
 				options.SwaggerEndpoint($"/swagger/{groupName}/swagger.json",
 					groupName.ToUpperInvariant());
 			}
-		}
-
-		public static void ConfigureMassTransit(IBusRegistrationConfigurator configurator, IConfiguration configuration) {
-			configurator.UsingRabbitMq((ctx, cfg) => {
-				cfg.Host(configuration.GetConnectionString("RabbitMQ"));
-
-				cfg.ReceiveEndpoint("FlexiFile.API", e => {
-					e.ExchangeType = ExchangeType.Topic;
-				});
-			});
 		}
 
 		public static void ConfigureControllers(MvcOptions options) {

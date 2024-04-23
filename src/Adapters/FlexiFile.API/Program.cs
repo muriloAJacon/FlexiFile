@@ -5,7 +5,6 @@ using FlexiFile.API.Options;
 using FlexiFile.Core.Models.ConversionParameters.RearrangeDocument;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using MassTransit;
 using MediatR;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Serilog;
