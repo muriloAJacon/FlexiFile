@@ -2,7 +2,6 @@ using Autofac.Extensions.DependencyInjection;
 using FlexiFile.API.Configurations;
 using FlexiFile.API.Filters;
 using FlexiFile.API.Options;
-using FlexiFile.Core.Models.ConversionParameters.RearrangeDocument;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
@@ -32,9 +31,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
-builder.Services.AddApiVersioning(ExtensionOptions.ConfigureApiVersioning);
+builder.Services.AddApiVersioning(ExtensionOptions.ConfigureApiVersioning)
+				.AddApiExplorer(ExtensionOptions.ConfigureApiVersioningExplorer);
 
-builder.Services.AddVersionedApiExplorer(ExtensionOptions.ConfigureApiVersioningExplorer);
 
 builder.Services.AddEndpointsApiExplorer();
 

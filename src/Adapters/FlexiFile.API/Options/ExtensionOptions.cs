@@ -1,7 +1,7 @@
-﻿using FlexiFile.Core.OptionsBuilder;
+﻿using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
+using FlexiFile.Core.OptionsBuilder;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Text.Json.Serialization;
 
