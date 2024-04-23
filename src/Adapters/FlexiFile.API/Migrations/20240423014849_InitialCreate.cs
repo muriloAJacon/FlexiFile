@@ -301,6 +301,16 @@ namespace FlexiFile.API.Migrations
 
             migrationBuilder.InsertData(
                 schema: "FlexiFile",
+                table: "Setting",
+                columns: new[] { "id", "last_update_date", "updated_by_user_id", "value" },
+                values: new object[,]
+                {
+                    { "ALLOW_ANONYMOUS_REGISTER", null, null, "False" },
+                    { "GLOBAL_MAXIMUM_FILE_SIZE", null, null, "0" }
+                });
+
+            migrationBuilder.InsertData(
+                schema: "FlexiFile",
                 table: "FileTypeConversion",
                 columns: new[] { "id", "description", "from_type_id", "handler_class_name", "is_active", "max_number_files", "min_number_files", "model_class_name", "to_type_id", "type" },
                 values: new object[,]

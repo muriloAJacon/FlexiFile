@@ -189,6 +189,11 @@ public partial class PostgresContext : DbContext
             entity.HasKey(e => e.Id).HasName("pk_Setting");
 
             entity.HasOne(d => d.UpdatedByUser).WithMany(p => p.Settings).HasConstraintName("fk_Setting_User");
+
+            entity.HasData(
+                new Setting { Id = "GLOBAL_MAXIMUM_FILE_SIZE", Value = 0.ToString(), LastUpdateDate = null, UpdatedByUserId = null },
+                new Setting { Id = "ALLOW_ANONYMOUS_REGISTER", Value = false.ToString(), LastUpdateDate = null, UpdatedByUserId = null }
+            );
         });
 
         modelBuilder.Entity<User>(entity =>

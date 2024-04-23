@@ -970,6 +970,18 @@ namespace FlexiFile.API.Migrations
                     b.HasIndex(new[] { "UpdatedByUserId" }, "IX_Setting_updated_by_user_id");
 
                     b.ToTable("Setting", "FlexiFile");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "GLOBAL_MAXIMUM_FILE_SIZE",
+                            Value = "0"
+                        },
+                        new
+                        {
+                            Id = "ALLOW_ANONYMOUS_REGISTER",
+                            Value = "False"
+                        });
                 });
 
             modelBuilder.Entity("FlexiFile.Core.Entities.Postgres.User", b =>
