@@ -15,7 +15,7 @@ namespace FlexiFile.Infrastructure.Repository {
 		}
 
 		public async Task<List<FileTypeConversion>> GetAvailableConversions(string fromMimeType) {
-			return await Context.FileTypeConversions.Include(x => x.FromType).Include(x => x.ToType).Where(x => x.FromType.MimeTypes.Contains(fromMimeType) && x.IsActive).ToListAsync();
+			return await Context.FileTypeConversions.Include(x => x.FromType).Include(x => x.ToType).Where(x => x.FromType.MimeType == fromMimeType && x.IsActive).ToListAsync();
 		}
 	}
 }

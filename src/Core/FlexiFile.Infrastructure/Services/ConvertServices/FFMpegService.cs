@@ -32,7 +32,7 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 				Guid outputFileId = Guid.NewGuid();
 				string outputPath = Path.Combine(directory.FullName, conversion.Id.ToString(), outputFileId.ToString());
 
-				string tempOutputPath = outputPath + "." + outputFileType.MimeTypes.First() switch {
+				string tempOutputPath = outputPath + "." + outputFileType.MimeType switch {
 					"video/mp4" => "mp4",
 					"video/mpeg" => "mpeg",
 					"video/webm" => "webm",

@@ -34,7 +34,7 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 
 				using var image = new MagickImage(inputFilePath);
 
-				MagickFormat format = outputFileType.MimeTypes.First() switch {
+				MagickFormat format = outputFileType.MimeType switch {
 					"image/jpeg" => MagickFormat.Jpeg,
 					"image/png" => MagickFormat.Png,
 					"image/gif" => MagickFormat.Gif,

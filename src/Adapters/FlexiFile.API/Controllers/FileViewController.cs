@@ -29,7 +29,7 @@ namespace FlexiFile.API.Controllers {
 
 			string? fileName = download ? fileInfo.OriginalName : null;
 
-			return PhysicalFile(filePath, fileInfo.Type.MimeTypes.First(), fileName);
+			return PhysicalFile(filePath, fileInfo.Type.MimeType, fileName);
 		}
 
 		[HttpGet("{conversionId:guid}/{fileId:guid}")]
@@ -49,7 +49,7 @@ namespace FlexiFile.API.Controllers {
 
 			string? fileName = download ? file.Id.ToString() : null; // TODO: ADD EXTENSION
 
-			string mimeType = conversionInfo.FileTypeConversion.ToType?.MimeTypes.First() ?? "application/pdf"; // TODO: GET FROM FILE
+			string mimeType = conversionInfo.FileTypeConversion.ToType?.MimeType ?? "application/pdf"; // TODO: GET FROM FILE
 
 			return PhysicalFile(filePath, mimeType, fileName);
 		}
