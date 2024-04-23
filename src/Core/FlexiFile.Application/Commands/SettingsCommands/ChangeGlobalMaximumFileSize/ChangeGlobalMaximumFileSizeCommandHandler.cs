@@ -23,7 +23,7 @@ namespace FlexiFile.Application.Commands.SettingsCommands.ChangeGlobalMaximumFil
 
 			long currentValue = Convert.ToInt64(setting.Value);
 
-			long newValue = request.MaxFileSize ?? 0;
+			long newValue = request.MaxFileSize;
 
 			if (currentValue == newValue) {
 				return ResultCommand.BadRequest("The value is already set to the requested value", "valueEqualToRequested");

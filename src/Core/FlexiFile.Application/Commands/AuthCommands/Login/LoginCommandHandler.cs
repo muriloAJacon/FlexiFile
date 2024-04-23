@@ -48,7 +48,7 @@ namespace FlexiFile.Application.Commands.AuthCommands.Login {
 					Id = token.RefreshToken,
 					User = user,
 					CreatedAt = DateTime.UtcNow,
-					ExpiresAt = DateTime.UtcNow.AddSeconds(_tokenConfigurations.FinalExpiration),
+					ExpiresAt = token.RefreshTokenExpiresAt,
 				};
 
 				_unitOfWork.UserRefreshTokenRepository.Add(refreshToken);

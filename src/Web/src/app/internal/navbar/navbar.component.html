@@ -1,0 +1,12 @@
+<nav class="sticky inset-x-0 top-0 z-50 bg-[#2d2f33]">
+	<div class="flex items-center justify-between p-6 px-8">
+		<div class="flex flex-1">
+			<a routerLink="/" class="font-semibold text-white">FlexiFile</a>
+		</div>
+		<div class="flex flex-1 justify-end gap-x-2">
+			<a routerLink="/" class="text-sm font-semibold leading-6 py-2 px-3 rounded-lg border-[1px] border-[#ffc107] text-[#ffc107] hover:bg-[#ffc107] hover:text-black transition-all">Home</a>
+			<a routerLink="/settings" class="text-sm font-semibold leading-6 py-2 px-3 rounded-lg border-[1px] border-[#ffc107] text-[#ffc107] hover:bg-[#ffc107] hover:text-black transition-all">Management</a>
+			<button (click)="logout()" type="button" class="text-sm font-semibold leading-6 py-2 px-3 rounded-lg border-[1px] border-[#ffc107] text-[#ffc107] hover:bg-[#ffc107] hover:text-black transition-all">Logout</button>
+		</div>
+	</div>
+</nav>

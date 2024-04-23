@@ -1,0 +1,107 @@
+<app-navbar></app-navbar>
+
+<section class="flex relative justify-center py-24 px-5 md:px-24 xl:px-36 2xl:px-48 3xl:px-96">
+    <div class="container">
+        <div class="container flex flex-col items-center">
+            <div class="text-center mb-8">
+                <h1 class="text-2xl">Manage FlexiFile</h1>
+            </div>
+
+			<div class="card w-[1200px] max-w-full px-5 py-5 mt-5">
+				<ngx-spinner color="#ffcf66" bdColor="rgba(255,255,255,0.8)" name="settings" [fullScreen]="false"></ngx-spinner>
+
+				<h2 class="text-xl mb-5">Settings</h2>
+
+				<div class="inline-flex items-center">
+
+					<label class="relative flex cursor-pointer items-center rounded-full py-1">
+						<input type="checkbox" class="peer input-checkbox border-gray-200 checked:border-blue-500 checked:bg-blue-500"
+							id="allowAnonymousRegister" placeholder=" " [formControl]="allowAnonymousRegisterControl">
+						<div class="input-checkbox-icon text-white">
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
+								stroke="currentColor" stroke-width="1">
+								<path fill-rule="evenodd"
+									d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+									clip-rule="evenodd"></path>
+							</svg>
+						</div>
+					</label>
+					<label class="label-checkbox text-gray-700" for="allowAnonymousRegister">
+						Allow anonymous users to register
+					</label>
+				</div>
+
+				<div class="mt-8">
+					<form [formGroup]="maxFileSizeForm" (ngSubmit)="saveMaxFileSize()">
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-x-2">
+							<div class="relative w-full min-w-[200px]">
+								<input id="sizeNumber" class="peer input" placeholder=" " formControlName="sizeNumber" type="number">
+			
+								<label for="sizeNumber" class="form-label">
+									Max file size
+								</label>
+							</div>
+
+							<div class="relative w-full min-w-[200px]">
+								<select id="sizeUnit" class="peer appearance-none select-arrow select" formControlName="sizeUnit">
+									<option *ngFor="let unit of sizeUnits" [ngValue]="unit.value">{{ unit.description }}</option>
+								</select>
+			
+								<label for="sizeUnit" class="form-label">
+									Unit
+								</label>
+							</div>
+						</div>
+
+						<div class="flex justify-end mt-3">
+							<button type="submit" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40">
+								<fa-icon class="mr-2" [icon]="['fas', 'floppy-disk']"></fa-icon>
+								<span>Save</span>
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<div class="card w-[1200px] max-w-full px-5 py-5 mt-5">
+				<ngx-spinner color="#ffcf66" bdColor="rgba(255,255,255,0.8)" name="users" [fullScreen]="false"></ngx-spinner>
+
+				<h2 class="text-xl mb-5">Users</h2>
+
+				<ngx-datatable class="bootstrap" [rows]="users"
+				[columnMode]="columnMode" [headerHeight]="50" [footerHeight]="50" rowHeight="auto" rowWidth="auto" [scrollbarH]="true"
+				[messages]="messages">
+
+					<ngx-datatable-column name="Name" [width]="150" [sortable]="false" prop="name">
+					</ngx-datatable-column>
+
+					<ngx-datatable-column name="E-mail" [width]="150" [sortable]="false" prop="email">
+					</ngx-datatable-column>
+
+					<ngx-datatable-column name="Actions" [width]="150" [sortable]="false" prop="">
+						<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+							<div class="flex gap-x-1">
+								<button (click)="grantAccess(row)" *ngIf="!row.approved" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
+									<fa-icon [icon]="['fas', 'address-card']"></fa-icon>
+									<span>Grant Access</span>
+								</button>
+
+								<ng-container *ngIf="[AccessLevel.User, AccessLevel.Admin].includes(row.accessLevel)">
+									<button *ngIf="!row.blocked" (click)="changeUserBlock(row, true)" class="button-default bg-gradient-to-tr from-red-600 to-red-400 text-white shadow-red-700/20 hover:shadow-red-700/40 flex flex-wrap justify-center gap-x-2">
+										<fa-icon [icon]="['fas', 'ban']"></fa-icon>
+										<span>Block</span>
+									</button>
+	
+									<button *ngIf="row.blocked" (click)="changeUserBlock(row, false)" class="button-default bg-gradient-to-tr from-green-600 to-green-400 text-white shadow-green-700/20 hover:shadow-green-700/40 flex flex-wrap justify-center gap-x-2">
+										<fa-icon [icon]="['fas', 'unlock']"></fa-icon>
+										<span>Unblock</span>
+									</button>
+								</ng-container>
+							</div>
+						</ng-template>
+					</ngx-datatable-column>
+				</ngx-datatable>
+			</div>
+        </div>
+    </div>
+</section>

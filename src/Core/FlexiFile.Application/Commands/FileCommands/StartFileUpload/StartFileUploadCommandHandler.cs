@@ -25,7 +25,7 @@ namespace FlexiFile.Application.Commands.FileCommands.StartFileUpload {
 
 			var type = await _unitOfWork.FileTypeRepository.GetByMimeTypeAsync(request.MimeType);
 			if (type is null) {
-				return ResultCommand.Unauthorized("Invalid file type.", "invalidFileType");
+				return ResultCommand.Unauthorized("Unsupported file type.", "unsupportedFileType");
 			}
 
 			var globalMaxFileSize = await _unitOfWork.SettingRepository.GetGlobalMaximumFileSize();

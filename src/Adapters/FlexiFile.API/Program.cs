@@ -39,8 +39,6 @@ builder.Services.AddVersionedApiExplorer(ExtensionOptions.ConfigureApiVersioning
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddMassTransit(x => ExtensionOptions.ConfigureMassTransit(x, builder.Configuration));
-
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddPostgres(builder.Configuration, builder.Environment);

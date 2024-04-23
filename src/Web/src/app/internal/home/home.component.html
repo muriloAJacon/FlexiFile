@@ -1,0 +1,277 @@
+<app-navbar></app-navbar>
+
+<section class="flex relative justify-center py-24 px-5 md:px-24 xl:px-36 2xl:px-48 3xl:px-96">
+    <div class="container">
+        <div class="container flex flex-col items-center">
+            <div class="text-center mb-8">
+                <h1 class="text-2xl">Convert your files here</h1>
+				<h2 class="text-xl">Upload and convert your files to several different formats</h2>
+            </div>
+
+			<div class="relative" appDragDrop [backdrop]="fileBackdrop" (filesDropped)="uploadFiles($event)">
+				<div class="card w-[600px] max-w-full px-10 py-10">
+					<div class="text-center">
+						<input class="hidden" type="file" id="fileInput" multiple (change)="fileInputChange($event)">
+						<label for="fileInput" class="button-default text-lg bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40">
+							<fa-icon class="mr-2" [icon]="['fas', 'cloud-upload']"></fa-icon>
+							<span>Select File For Upload</span>
+						</label>
+	
+						<div class="mt-3">Or drop your files here</div>
+					</div>
+				</div>
+
+				<div #fileBackdrop class="hidden pointer-events-none justify-center items-center rounded-xl absolute inset-0 bg-[rgba(255,255,255,0.8)]">
+					<span>Drop files to start uploading</span>
+				</div>
+			</div>
+
+			<div class="card w-[600px] max-w-full px-5 py-5 mt-5" *ngFor="let file of recentFiles">
+				<div class="flex justify-between items-center gap-x-2">
+					<span>{{ getStatusText(file) }}</span>
+
+					<a *ngIf="file.fileModel?.finishedUpload" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + file.fileModel.id" target="_blank">
+						<fa-icon [icon]="['fas', 'arrow-up-right-from-square']"></fa-icon>
+						<span>Open</span>
+					</a>
+
+					<a *ngIf="file.fileModel?.finishedUpload" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + file.fileModel.id + '?download=true'" target="_blank">
+						<fa-icon [icon]="['fas', 'download']"></fa-icon>
+						<span>Download</span>
+					</a>
+
+					<button (click)="openConvertModal(file.fileModel)" *ngIf="[InternalFileStatus.Uploading, InternalFileStatus.Complete].includes(file.status)" type="button" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
+						<fa-icon [icon]="['fas', 'shuffle']"></fa-icon>
+						<span>Convert</span>
+					</button>
+				</div>
+
+				<div class="mt-5" *ngIf="file.error">
+					<app-alert>{{ file.error }}</app-alert>
+				</div>
+
+				<div *ngIf="file.status === InternalFileStatus.Uploading" class="mt-3 flex-start flex relative h-4 overflow-hidden rounded bg-slate-200 font-sans text-xs font-medium w-full">
+					<div class="flex h-full items-baseline justify-center overflow-hidden break-all bg-blue-700 text-white progress-bar" [style.width]="file.uploadPercentageComplete + '%'"></div>
+					<span class="absolute inset-0 text-center text-white">{{ file.uploadPercentageComplete }}%</span>
+				</div>
+
+				<hr class="my-3" *ngIf="file.fileModel?.conversions.length > 0">
+				
+				<div *ngFor="let conversion of file.fileModel?.conversions; let idx = index">
+					<hr class="my-3" *ngIf="idx + 1 !== file.fileModel.conversions.length">
+
+					<div class="flex justify-between items-center">
+						<div>
+							<strong>Conversion #{{ idx + 1}}</strong>
+							<span>: </span>
+							<ng-container [ngSwitch]="conversion.status">
+								<span *ngSwitchCase="ConversionStatus.AwaitingQueue">Awaiting queue...</span>
+								<span *ngSwitchCase="ConversionStatus.InQueue">In queue...</span>
+								<span *ngSwitchCase="ConversionStatus.InProgress">Converting... {{ conversion.percentageComplete }}</span>
+								<span *ngSwitchCase="ConversionStatus.Failed">Conversion failed, check the logs for more details</span>
+								<span *ngSwitchCase="ConversionStatus.Completed">Conversion complete</span>
+							</ng-container>
+						</div>
+						<div class="flex gap-x-2" *ngIf="conversion.fileResults.length === 1 && conversion.status === ConversionStatus.Completed">
+							<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + conversion.fileResults[0].id" target="_blank">
+								<fa-icon [icon]="['fas', 'arrow-up-right-from-square']"></fa-icon>
+								<span>Open</span>
+							</a>
+							<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + conversion.fileResults[0].id + '?download=true'" target="_blank">
+								<fa-icon [icon]="['fas', 'download']"></fa-icon>
+								<span>Download</span>
+							</a>
+						</div>
+					</div>
+
+					<div *ngIf="conversion.fileResults.length > 1 && conversion.status === ConversionStatus.Completed">
+						<div *ngFor="let result of conversion.fileResults; let idx = index" class="flex justify-between items-center gap-x-2 mt-3">
+							<span>File #{{ idx + 1 }}</span>
+
+							<div class="flex gap-x-2">
+								<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + result.id" target="_blank">
+									<fa-icon [icon]="['fas', 'arrow-up-right-from-square']"></fa-icon>
+									<span>Open</span>
+								</a>
+								<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + result.id + '?download=true'" target="_blank">
+									<fa-icon [icon]="['fas', 'download']"></fa-icon>
+									<span>Download</span>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<button *ngIf="!showOlderFiles" (click)="loadOlderFiles()" type="button" class="mt-5 text-sm">
+				<fa-icon class="mr-2" [icon]="['fas', 'clock-rotate-left']"></fa-icon>
+				<span>Show older files</span>
+			</button>
+
+			<div *ngIf="showOlderFiles">
+				<ngx-spinner color="#ffcf66" bdColor="rgba(255,255,255,0.8)" name="olderFiles" [fullScreen]="false"></ngx-spinner>
+
+				<div class="card w-[600px] max-w-full px-5 py-5 mt-5" *ngFor="let file of olderFiles">
+					<div class="flex justify-between items-center gap-x-2">
+						<span>{{ file.originalName }}</span>
+
+						<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + file.id" target="_blank">
+							<fa-icon [icon]="['fas', 'arrow-up-right-from-square']"></fa-icon>
+							<span>Open</span>
+						</a>
+
+						<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + file.id + '?download=true'" target="_blank">
+							<fa-icon [icon]="['fas', 'download']"></fa-icon>
+							<span>Download</span>
+						</a>
+
+						<button (click)="openConvertModal(file)" type="button" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
+							<fa-icon [icon]="['fas', 'shuffle']"></fa-icon>
+							<span>Convert</span>
+						</button>
+					</div>
+
+					<hr class="my-3" *ngIf="file.conversions.length > 0">
+
+					<div *ngFor="let conversion of file.conversions; let idx = index">
+						<hr class="my-3" *ngIf="idx + 1 !== file.conversions.length">
+
+						<div class="flex justify-between items-center">
+							<div>
+								<strong>Conversion #{{ idx + 1}}</strong>
+								<span>: </span>
+								<ng-container [ngSwitch]="conversion.status">
+									<span *ngSwitchCase="ConversionStatus.AwaitingQueue">Awaiting queue...</span>
+									<span *ngSwitchCase="ConversionStatus.InQueue">In queue...</span>
+									<span *ngSwitchCase="ConversionStatus.InProgress">Converting... {{ conversion.percentageComplete }}</span>
+									<span *ngSwitchCase="ConversionStatus.Failed">Conversion failed, check the logs for more details</span>
+									<span *ngSwitchCase="ConversionStatus.Completed">Conversion complete</span>
+								</ng-container>
+							</div>
+							<div class="flex gap-x-2" *ngIf="conversion.fileResults.length === 1 && conversion.status === ConversionStatus.Completed">
+								<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + conversion.fileResults[0].id" target="_blank">
+									<fa-icon [icon]="['fas', 'arrow-up-right-from-square']"></fa-icon>
+									<span>Open</span>
+								</a>
+								<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + conversion.fileResults[0].id + '?download=true'" target="_blank">
+									<fa-icon [icon]="['fas', 'download']"></fa-icon>
+									<span>Download</span>
+								</a>
+							</div>
+						</div>
+
+						<div *ngIf="conversion.fileResults.length > 1 && conversion.status === ConversionStatus.Completed">
+							<div *ngFor="let result of conversion.fileResults; let idx = index" class="flex justify-between items-center gap-x-2 mt-3">
+								<span>File #{{ idx + 1 }}</span>
+	
+								<div class="flex gap-x-2">
+									<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + result.id" target="_blank">
+										<fa-icon [icon]="['fas', 'arrow-up-right-from-square']"></fa-icon>
+										<span>Open</span>
+									</a>
+									<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + result.id + '?download=true'" target="_blank">
+										<fa-icon [icon]="['fas', 'download']"></fa-icon>
+										<span>Download</span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+        </div>
+    </div>
+</section>
+
+<app-modal #convertModal>
+	<span title>Choose a format to convert to</span>
+	
+	<ngx-spinner color="#ffcf66" bdColor="rgba(255,255,255,0.8)" name="convertType" [fullScreen]="false"></ngx-spinner>
+
+	<div class="mt-5" *ngIf="convertModalError">
+		<app-alert>{{ convertModalError }}</app-alert>
+	</div>
+
+	<ng-container [ngSwitch]="modalStep">
+		<div *ngSwitchCase="ConvertModalStep.Select">
+	
+			<div *ngIf="conversions.length === 0">
+				No available conversions for this file
+			</div>
+	
+			<div *ngFor="let conversion of conversions">
+				<button (click)="selectFileConversion(conversion)" class="button-outline"><span *ngIf="conversion.toTypeDescription">{{ conversion.toTypeDescription }} - </span>{{ conversion.description }}</button>
+			</div>
+		</div>
+
+		<div *ngSwitchCase="ConvertModalStep.MultiSelect">
+			<div>
+				Select the files that you want to merge
+			</div>
+
+			<div *ngFor="let form of filesSelectForm.controls">
+				<div class="flex justify-between items-center my-3">
+					<div class="inline-flex items-center">
+						<label class="relative flex cursor-pointer items-center rounded-full py-1">
+							<input type="checkbox" class="peer input-checkbox border-gray-200 checked:border-blue-500 checked:bg-blue-500"
+								[id]="form.controls['fileId'].value" placeholder=" " [formControl]="getControl(form.controls['selected'])">
+							<div class="input-checkbox-icon text-white">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
+									stroke="currentColor" stroke-width="1">
+									<path fill-rule="evenodd"
+										d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+										clip-rule="evenodd"></path>
+								</svg>
+							</div>
+						</label>
+						<label class="label-checkbox text-gray-700" [for]="form.controls['fileId'].value">
+							{{ getFile(form.controls['fileId'].value).fileModel.originalName }}
+						</label>
+					</div>
+
+					<div *ngIf="form.controls['selected'].value" class="relative w-[200px]">
+						<select class="peer appearance-none select" [formControl]="getControl(form.controls['position'])">
+							<option *ngFor="let order of getOrderArray()" [ngValue]="order">{{ order }}</option>
+						</select>
+
+						<label class="form-label">
+							Order
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="flex md:justify-end mt-3">
+				<button (click)="submitMultiSelect()" type="button" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40">
+					<fa-icon class="mr-2" [icon]="['fas', 'file-lines']"></fa-icon>
+					<span>Merge</span>
+				</button>
+			</div>
+		</div>
+
+		<div *ngSwitchCase="ConvertModalStep.PageNumber">
+
+			<div class="mt-5">
+				<div class="mb-3">
+					Insert the number of the pages (comma separated) in the order you desire
+				</div>
+
+				<div class="relative w-full min-w-[200px]">
+					<input id="pagesSelectForm" class="peer input" placeholder=" " [formControl]="pagesSelectForm">
+
+					<label for="pagesSelectForm" class="form-label">
+						Page numbers
+					</label>
+				</div>
+			</div>
+
+			<div class="flex md:justify-end mt-3">
+				<button (click)="submitPageNumbers()" type="button" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40">
+					<fa-icon class="mr-2" [icon]="['fas', 'file-lines']"></fa-icon>
+					<span>Rearrange</span>
+				</button>
+			</div>
+		</div>
+
+	</ng-container>
+</app-modal>
