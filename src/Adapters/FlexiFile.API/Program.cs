@@ -67,7 +67,7 @@ builder.Services.ConfigureOptions(builder.Configuration);
 
 var app = builder.Build();
 
-//app.UseMigrations();
+app.UseMigrations();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
