@@ -1,4 +1,5 @@
-﻿using FlexiFile.API.Filters;
+﻿using Asp.Versioning;
+using FlexiFile.API.Filters;
 using FlexiFile.Application.Commands.SettingsCommands.ChangeAllowAnonymousRegister;
 using FlexiFile.Application.Commands.SettingsCommands.ChangeGlobalMaximumFileSize;
 using FlexiFile.Application.Commands.SettingsCommands.GetAllowAnonymousRegister;

@@ -42,7 +42,7 @@ namespace FlexiFile.Application.Commands.FileCommands.FileUpload {
 				return ResultCommand.Unauthorized("Size exceeds maximum limit.", "fileExceedsMaximumSize");
 			}
 
-			if (!file.Type.MimeTypes.Contains(request.File.ContentType)) {
+			if (file.Type.MimeType != request.File.ContentType) {
 				return ResultCommand.BadRequest("File type does not match", "fileTypeDoesNotMatch");
 			}
 

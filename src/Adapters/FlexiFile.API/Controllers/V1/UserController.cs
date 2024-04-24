@@ -1,4 +1,5 @@
-﻿using FlexiFile.API.Filters;
+﻿using Asp.Versioning;
+using FlexiFile.API.Filters;
 using FlexiFile.Application.Commands.UserCommands.ApproveUser;
 using FlexiFile.Application.Commands.UserCommands.CreateFirstSetup;
 using FlexiFile.Application.Commands.UserCommands.CreateUser;
