@@ -33,7 +33,10 @@ namespace FlexiFile.Application.Commands.FileCommands.StartFileUpload {
 				return ResultCommand.Unauthorized("Size exceeds maximum limit.", "fileExceedsMaximumSize");
 			}
 
-			// TODO: Validate account size limit
+			var user = await _unitOfWork.UserRepository.GetByIdAsync(_userClaimsService.Id) ?? throw new Exception("User not found in database");
+			if (user.StorageLimit is not null && request.FileSize + user.StorageUsed > user.StorageLimit) {
+				return ResultCommand.Unauthorized("Storage limit exceeded.", "storageLimitExceeded");
+			}
 
 			var file = new File {
 				Id = Guid.NewGuid(),

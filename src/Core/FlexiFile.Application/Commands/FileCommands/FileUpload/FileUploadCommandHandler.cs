@@ -46,6 +46,12 @@ namespace FlexiFile.Application.Commands.FileCommands.FileUpload {
 				return ResultCommand.BadRequest("File type does not match", "fileTypeDoesNotMatch");
 			}
 
+			var user = file.OwnedByUser;
+			if (user.StorageLimit is not null && file.Size + user.StorageUsed > user.StorageLimit) {
+				return ResultCommand.Unauthorized("Storage limit exceeded.", "storageLimitExceeded");
+			}
+
+			user.StorageUsed += file.Size;
 			file.FinishedUpload = true;
 			file.FinishedUploadAt = DateTime.UtcNow;
 
