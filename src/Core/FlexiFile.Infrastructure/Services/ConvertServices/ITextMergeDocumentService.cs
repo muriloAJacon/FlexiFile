@@ -51,6 +51,7 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 				var fileResultEvent = new ConvertFileResultEvent {
 					EventId = Guid.NewGuid(),
 					FileId = outputFileId,
+					Size = new FileInfo(outputFilePath).Length,
 					Order = 1
 				};
 				await notificationChannelWriter.WriteAsync(fileResultEvent);

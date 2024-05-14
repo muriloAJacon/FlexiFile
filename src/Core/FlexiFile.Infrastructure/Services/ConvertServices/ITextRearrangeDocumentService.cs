@@ -44,7 +44,8 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 
 				Guid outputFileId = Guid.NewGuid();
 
-				using PdfWriter writer = new(Path.Combine(outputPath, outputFileId.ToString()));
+				string outputFilePath = Path.Combine(outputPath, outputFileId.ToString());
+				using PdfWriter writer = new(outputFilePath);
 				using PdfDocument writingDocument = new(writer);
 
 				foreach (int originalPageNumber in parameters.OriginalPageNumbers) {
@@ -54,6 +55,7 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 				var fileResultEvent = new ConvertFileResultEvent {
 					EventId = Guid.NewGuid(),
 					FileId = outputFileId,
+					Size = new FileInfo(outputFilePath).Length,
 					Order = 1
 				};
 				await notificationChannelWriter.WriteAsync(fileResultEvent);

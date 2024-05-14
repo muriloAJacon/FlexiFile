@@ -14,6 +14,7 @@ namespace FlexiFile.Application.Commands.FileCommands.CreateFileConvertResult {
 			var result = new FileConversionResult {
 				Id = request.FileId,
 				FileConversionId = request.ConversionId,
+				Size = request.Size,
 				Order = request.Order,
 				CreationDate = DateTime.UtcNow
 			};

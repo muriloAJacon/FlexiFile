@@ -34,13 +34,15 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 				for (int i = 1; i <= pages; i++) {
 					Guid outputFileId = Guid.NewGuid();
 
-					using PdfWriter writer = new(Path.Combine(outputPath, outputFileId.ToString()));
+					string outputFilePath = Path.Combine(outputPath, outputFileId.ToString());
+					using PdfWriter writer = new(outputFilePath);
 					using PdfDocument pdf = new(writer);
 					separatingPdf.CopyPagesTo(i, i, pdf);
 
 					var fileResultEvent = new ConvertFileResultEvent {
 						EventId = Guid.NewGuid(),
 						FileId = outputFileId,
+						Size = new FileInfo(outputFilePath).Length,
 						Order = i
 					};
 					await notificationChannelWriter.WriteAsync(fileResultEvent);

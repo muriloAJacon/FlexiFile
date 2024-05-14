@@ -100,6 +100,7 @@ namespace FlexiFile.Application.Commands.ConvertCommands.StartConvertCommand {
 			await _mediator.Send(new CreateFileConvertResultCommand {
 				FileId = @event.FileId,
 				ConversionId = conversion.Id,
+				Size = @event.Size,
 				Order = @event.Order
 			});
 
