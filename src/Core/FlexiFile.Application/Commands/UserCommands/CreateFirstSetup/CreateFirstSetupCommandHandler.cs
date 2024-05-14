@@ -28,6 +28,7 @@ namespace FlexiFile.Application.Commands.UserCommands.CreateFirstSetup {
 				AccessLevel = AccessLevel.Root,
 				Approved = true,
 				ApprovedAt = DateTime.UtcNow,
+				StorageUsed = 0,
 				CreationDate = DateTime.UtcNow,
 				LastUpdateDate = DateTime.UtcNow,
 			};
