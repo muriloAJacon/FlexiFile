@@ -1,16 +1,20 @@
 ﻿using FlexiFile.Core.Entities.Postgres;
 using FlexiFile.Core.Events;
+using FlexiFile.Core.Interfaces.Services;
 using FlexiFile.Core.Interfaces.Services.ConvertServices;
 using iText.Kernel.Pdf;
 using Microsoft.Extensions.Logging;
+using Serilog.Sinks.File;
 using System.Threading.Channels;
 
 namespace FlexiFile.Infrastructure.Services.ConvertServices {
 	public class ITextSplitDocumentService : ISplitDocumentService {
 		private readonly ILogger<ITextSplitDocumentService> _logger;
+		private readonly IValidateUserStorageService _validateUserStorageService;
 
-		public ITextSplitDocumentService(ILogger<ITextSplitDocumentService> logger) {
+		public ITextSplitDocumentService(ILogger<ITextSplitDocumentService> logger, IValidateUserStorageService validateUserStorageService) {
 			_logger = logger;
+			_validateUserStorageService = validateUserStorageService;
 		}
 
 		public async Task ConvertFile(ChannelWriter<EventArgs> notificationChannelWriter, FileConversion conversion, string fileDirectory, FileType inputFileType, FileType? outputFileType) {
@@ -39,10 +43,18 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 					using PdfDocument pdf = new(writer);
 					separatingPdf.CopyPagesTo(i, i, pdf);
 
+					pdf.Close();
+
+					long fileSize = new FileInfo(outputFilePath).Length;
+					if (!_validateUserStorageService.ValidateStorageForConvertedFile(conversion.User, fileSize)) {
+						System.IO.File.Delete(outputFilePath);
+						throw new Exception("User storage exceeded");
+					}
+
 					var fileResultEvent = new ConvertFileResultEvent {
 						EventId = Guid.NewGuid(),
 						FileId = outputFileId,
-						Size = new FileInfo(outputFilePath).Length,
+						Size = fileSize,
 						Order = i
 					};
 					await notificationChannelWriter.WriteAsync(fileResultEvent);

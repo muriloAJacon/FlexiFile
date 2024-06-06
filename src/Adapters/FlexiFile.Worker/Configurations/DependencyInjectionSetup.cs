@@ -13,6 +13,7 @@ namespace FlexiFile.Worker.Configurations {
 			services.AddTransient<ISplitDocumentService, ITextSplitDocumentService>();
 			services.AddTransient<IMergeDocumentService, ITextMergeDocumentService>();
 			services.AddTransient<IRearrangeDocumentService, ITextRearrangeDocumentService>();
+			services.AddTransient<IValidateUserStorageService, ValidateUserStorageService>();
 		}
 	}
 }
