@@ -12,6 +12,12 @@ namespace FlexiFile.Application.Commands.UserCommands.EditUser {
 				.MinimumLength(8).WithMessage(ValidatorsModelErrorMessages.MinLength)
 				.Matches("[A-Z]").WithMessage(ValidatorsModelErrorMessages.PasswordCapitalLetters)
 				.Matches("[0-9]").WithMessage(ValidatorsModelErrorMessages.PasswordNumbers);
+
+			RuleFor(x => x.StorageLimit)
+				.GreaterThan(0);
+
+			RuleFor(x => x.HardStorageLimit)
+				.GreaterThan(0);
 		}
 	}
 }
