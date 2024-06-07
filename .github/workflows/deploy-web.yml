@@ -1,0 +1,30 @@
+name: Deploy Web
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["master"]
+    paths:
+      - src/Web/**
+      - .github/workflows/deploy-web.yml
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Docker Login
+        uses: docker/login-action@v1.10.0
+        with:
+          username: ${{ secrets.REGISTRY_LOGIN }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v2.7.0
+        with:
+          push: true
+          tags: muriloajacon/flexifile-web:dev
+          file: src/Web/Dockerfile
+          context: ./src/Web/
