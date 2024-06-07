@@ -1,0 +1,42 @@
+name: Deploy API
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["master"]
+    paths:
+      - src/Adapters/FlexiFile.API/**
+      - src/Core/**
+      - .github/workflows/deploy-api.yml
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
+
+      - name: Docker Login
+        uses: docker/login-action@v1.10.0
+        with:
+          username: ${{ secrets.REGISTRY_LOGIN }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v2.7.0
+        with:
+          push: true
+          tags: muriloAJacon/flexifile-api:dev
+          file: src/Adapters/FlexiFile.API/Dockerfile
+          context: ./
