@@ -26,6 +26,6 @@ jobs:
         uses: docker/build-push-action@v2.7.0
         with:
           push: true
-          tags: muriloAJacon/flexifile-api:dev
+          tags: muriloajacon/flexifile-api:dev
           file: src/Adapters/FlexiFile.API/Dockerfile
           context: ./
