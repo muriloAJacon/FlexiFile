@@ -15,10 +15,12 @@ namespace FlexiFile.Application.Commands.FileCommands.StartFileUpload {
 	public class StartFileUploadHandler : IRequestHandler<StartFileUploadCommand, IResultCommand> {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IUserClaimsService _userClaimsService;
+		private readonly IValidateUserStorageService _validateUserStorageService;
 
-		public StartFileUploadHandler(IUnitOfWork unitOfWork, IUserClaimsService userClaimsService) {
+		public StartFileUploadHandler(IUnitOfWork unitOfWork, IUserClaimsService userClaimsService, IValidateUserStorageService validateUserStorageService) {
 			_unitOfWork = unitOfWork;
 			_userClaimsService = userClaimsService;
+			_validateUserStorageService = validateUserStorageService;
 		}
 
 		public async Task<IResultCommand> Handle(StartFileUploadCommand request, CancellationToken cancellationToken) {
@@ -33,7 +35,10 @@ namespace FlexiFile.Application.Commands.FileCommands.StartFileUpload {
 				return ResultCommand.Unauthorized("Size exceeds maximum limit.", "fileExceedsMaximumSize");
 			}
 
-			// TODO: Validate account size limit
+			var user = await _unitOfWork.UserRepository.GetByIdAsync(_userClaimsService.Id) ?? throw new Exception("User not found in database");
+			if (!_validateUserStorageService.ValidateStorageForNewFile(user, request.FileSize)) {
+				return ResultCommand.Unauthorized("Storage limit exceeded.", "storageLimitExceeded");
+			}
 
 			var file = new File {
 				Id = Guid.NewGuid(),

@@ -4,6 +4,7 @@ using System.Text.Json;
 using FlexiFile.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FlexiFile.API.Migrations
 {
     [DbContext(typeof(PostgresContext))]
-    partial class PostgresContextModelSnapshot : ModelSnapshot
+    [Migration("20240514002608_FileConvertResultSize")]
+    partial class FileConvertResultSize
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1025,10 +1028,6 @@ namespace FlexiFile.API.Migrations
                         .HasColumnType("character varying")
                         .HasColumnName("email");
 
-                    b.Property<long?>("HardStorageLimit")
-                        .HasColumnType("bigint")
-                        .HasColumnName("hard_storage_limit");
-
                     b.Property<DateTime>("LastUpdateDate")
                         .HasPrecision(3)
                         .HasColumnType("timestamp(3) with time zone")
@@ -1047,10 +1046,6 @@ namespace FlexiFile.API.Migrations
                     b.Property<long?>("StorageLimit")
                         .HasColumnType("bigint")
                         .HasColumnName("storage_limit");
-
-                    b.Property<long>("StorageUsed")
-                        .HasColumnType("bigint")
-                        .HasColumnName("storage_used");
 
                     b.HasKey("Id")
                         .HasName("pk_User");

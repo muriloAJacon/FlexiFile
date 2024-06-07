@@ -5,6 +5,7 @@ using FlexiFile.Application.Commands.UserCommands.CreateFirstSetup;
 using FlexiFile.Application.Commands.UserCommands.CreateUser;
 using FlexiFile.Application.Commands.UserCommands.EditUser;
 using FlexiFile.Application.Commands.UserCommands.GetFirstSetup;
+using FlexiFile.Application.Commands.UserCommands.GetSelfUser;
 using FlexiFile.Application.Commands.UserCommands.GetUsers;
 using FlexiFile.Core.Enums;
 using MediatR;
@@ -49,5 +50,9 @@ namespace FlexiFile.API.Controllers.V1 {
 		[Authorize]
 		[AccessLevel(AccessLevel.Admin)]
 		public async Task<IActionResult> GetUsers() => await _mediator.Send(new GetUsersCommand());
+
+		[HttpGet("self")]
+		[Authorize]
+		public async Task<IActionResult> GetSelfUser() => await _mediator.Send(new GetSelfUserCommand());
 	}
 }

@@ -15,6 +15,7 @@ namespace FlexiFile.Application.ViewModels {
 				.ForMember(x => x.Conversions, opt => opt.MapFrom(src => src.FileConversionOrigins.Select(x => x.FileConversion)));
 
 			CreateMap<User, UserViewModel>();
+			CreateMap<User, UserSelfViewModel>();
 
 			CreateMap<FileConversion, FileConversionViewModel>()
 				.ForMember(x => x.FileResults, opt => opt.MapFrom(src => src.FileConversionResults));

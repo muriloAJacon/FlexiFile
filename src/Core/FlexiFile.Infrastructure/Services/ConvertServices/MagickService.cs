@@ -1,5 +1,6 @@
 ﻿using FlexiFile.Core.Entities.Postgres;
 using FlexiFile.Core.Events;
+using FlexiFile.Core.Interfaces.Services;
 using FlexiFile.Core.Interfaces.Services.ConvertServices;
 using ImageMagick;
 using Microsoft.Extensions.Logging;
@@ -9,9 +10,11 @@ using System.Threading.Channels;
 namespace FlexiFile.Infrastructure.Services.ConvertServices {
 	public class MagickService : IConvertImageService {
 		private readonly ILogger<MagickService> _logger;
+		private readonly IValidateUserStorageService _validateUserStorageService;
 
-		public MagickService(ILogger<MagickService> logger) {
+		public MagickService(ILogger<MagickService> logger, IValidateUserStorageService validateUserStorageService) {
 			_logger = logger;
+			_validateUserStorageService = validateUserStorageService;
 		}
 
 		public async Task ConvertFile(ChannelWriter<EventArgs> notificationChannelWriter, FileConversion conversion, string fileDirectory, FileType inputFileType, FileType? outputFileType) {
@@ -50,9 +53,16 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 
 				await image.WriteAsync(outputPath, format);
 
+				long fileSize = new FileInfo(outputPath).Length;
+				if (!_validateUserStorageService.ValidateStorageForConvertedFile(conversion.User, fileSize)) {
+					System.IO.File.Delete(outputPath);
+					throw new Exception("User storage exceeded");
+				}
+
 				var fileResultEvent = new ConvertFileResultEvent {
 					EventId = Guid.NewGuid(),
 					FileId = outputFileId,
+					Size = fileSize,
 					Order = 1
 				};
 				await notificationChannelWriter.WriteAsync(fileResultEvent);

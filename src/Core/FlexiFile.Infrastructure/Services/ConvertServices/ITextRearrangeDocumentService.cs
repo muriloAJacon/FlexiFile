@@ -1,9 +1,11 @@
 ﻿using FlexiFile.Core.Entities.Postgres;
 using FlexiFile.Core.Events;
+using FlexiFile.Core.Interfaces.Services;
 using FlexiFile.Core.Interfaces.Services.ConvertServices;
 using FlexiFile.Core.Models.ConversionParameters.RearrangeDocument;
 using iText.Kernel.Pdf;
 using Microsoft.Extensions.Logging;
+using Serilog.Sinks.File;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +17,11 @@ using System.Threading.Tasks;
 namespace FlexiFile.Infrastructure.Services.ConvertServices {
 	public class ITextRearrangeDocumentService : IRearrangeDocumentService {
 		private readonly ILogger<ITextRearrangeDocumentService> _logger;
+		private readonly IValidateUserStorageService _validateUserStorageService;
 
-		public ITextRearrangeDocumentService(ILogger<ITextRearrangeDocumentService> logger) {
+		public ITextRearrangeDocumentService(ILogger<ITextRearrangeDocumentService> logger, IValidateUserStorageService validateUserStorageService) {
 			_logger = logger;
+			_validateUserStorageService = validateUserStorageService;
 		}
 
 		public async Task ConvertFile(ChannelWriter<EventArgs> notificationChannelWriter, FileConversion conversion, string fileDirectory, FileType inputFileType, FileType? outputFileType) {
@@ -44,16 +48,27 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 
 				Guid outputFileId = Guid.NewGuid();
 
-				using PdfWriter writer = new(Path.Combine(outputPath, outputFileId.ToString()));
+				string outputFilePath = Path.Combine(outputPath, outputFileId.ToString());
+				using PdfWriter writer = new(outputFilePath);
 				using PdfDocument writingDocument = new(writer);
 
 				foreach (int originalPageNumber in parameters.OriginalPageNumbers) {
 					readingDocument.CopyPagesTo(originalPageNumber, originalPageNumber, writingDocument);
 				}
 
+				writingDocument.Close();
+
+				long fileSize = new FileInfo(outputFilePath).Length;
+
+				if (!_validateUserStorageService.ValidateStorageForConvertedFile(conversion.User, fileSize)) {
+					System.IO.File.Delete(outputFilePath);
+					throw new Exception("User storage exceeded");
+				}
+
 				var fileResultEvent = new ConvertFileResultEvent {
 					EventId = Guid.NewGuid(),
 					FileId = outputFileId,
+					Size = fileSize,
 					Order = 1
 				};
 				await notificationChannelWriter.WriteAsync(fileResultEvent);

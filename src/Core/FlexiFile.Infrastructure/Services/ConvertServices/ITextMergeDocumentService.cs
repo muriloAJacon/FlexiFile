@@ -1,5 +1,6 @@
 ﻿using FlexiFile.Core.Entities.Postgres;
 using FlexiFile.Core.Events;
+using FlexiFile.Core.Interfaces.Services;
 using FlexiFile.Core.Interfaces.Services.ConvertServices;
 using iText.Kernel.Pdf;
 using Microsoft.AspNetCore.Components.Forms;
@@ -9,9 +10,11 @@ using System.Threading.Channels;
 namespace FlexiFile.Infrastructure.Services.ConvertServices {
 	public class ITextMergeDocumentService : IMergeDocumentService {
 		private readonly ILogger<ITextMergeDocumentService> _logger;
+		private readonly IValidateUserStorageService _validateUserStorageService;
 
-		public ITextMergeDocumentService(ILogger<ITextMergeDocumentService> logger) {
+		public ITextMergeDocumentService(ILogger<ITextMergeDocumentService> logger, IValidateUserStorageService validateUserStorageService) {
 			_logger = logger;
+			_validateUserStorageService = validateUserStorageService;
 		}
 
 		public async Task ConvertFile(ChannelWriter<EventArgs> notificationChannelWriter, FileConversion conversion, string fileDirectory, FileType inputFileType, FileType? outputFileType) {
@@ -48,9 +51,19 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 					await notificationChannelWriter.WriteAsync(progressEvent);
 				}
 
+				pdf.Close();
+
+				long fileSize = new FileInfo(outputFilePath).Length;
+
+				if (!_validateUserStorageService.ValidateStorageForConvertedFile(conversion.User, fileSize)) {
+					System.IO.File.Delete(outputFilePath);
+					throw new Exception("User storage exceeded");
+				}
+
 				var fileResultEvent = new ConvertFileResultEvent {
 					EventId = Guid.NewGuid(),
 					FileId = outputFileId,
+					Size = new FileInfo(outputFilePath).Length,
 					Order = 1
 				};
 				await notificationChannelWriter.WriteAsync(fileResultEvent);

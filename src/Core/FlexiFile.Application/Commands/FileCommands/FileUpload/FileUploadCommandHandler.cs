@@ -16,11 +16,13 @@ namespace FlexiFile.Application.Commands.FileCommands.FileUpload {
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IUserClaimsService _userClaimsService;
 		private readonly IFileService _fileService;
+		private readonly IValidateUserStorageService _validateUserStorageService;
 
-		public FileUploadCommandHandler(IUnitOfWork unitOfWork, IUserClaimsService userClaimsService, IFileService fileService) {
+		public FileUploadCommandHandler(IUnitOfWork unitOfWork, IUserClaimsService userClaimsService, IFileService fileService, IValidateUserStorageService validateUserStorageService) {
 			_unitOfWork = unitOfWork;
 			_userClaimsService = userClaimsService;
 			_fileService = fileService;
+			_validateUserStorageService = validateUserStorageService;
 		}
 
 		public async Task<IResultCommand> Handle(FileUploadCommand request, CancellationToken cancellationToken) {
@@ -46,6 +48,12 @@ namespace FlexiFile.Application.Commands.FileCommands.FileUpload {
 				return ResultCommand.BadRequest("File type does not match", "fileTypeDoesNotMatch");
 			}
 
+			var user = file.OwnedByUser;
+			if (!_validateUserStorageService.ValidateStorageForNewFile(user, file.Size)) {
+				return ResultCommand.Unauthorized("Storage limit exceeded.", "storageLimitExceeded");
+			}
+
+			user.StorageUsed += file.Size;
 			file.FinishedUpload = true;
 			file.FinishedUploadAt = DateTime.UtcNow;
 

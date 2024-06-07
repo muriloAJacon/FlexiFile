@@ -6,6 +6,7 @@ namespace FlexiFile.API.Configurations {
 		public static void AddDependencyInjection(this IServiceCollection services) {
 			services.AddTransient<IUserClaimsService, UserClaimsService>();
 			services.AddTransient<IFileService, FileService>();
+			services.AddTransient<IValidateUserStorageService, ValidateUserStorageService>();
 		}
 	}
 }

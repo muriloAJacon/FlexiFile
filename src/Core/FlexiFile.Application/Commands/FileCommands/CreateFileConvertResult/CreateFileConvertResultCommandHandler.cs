@@ -11,9 +11,13 @@ namespace FlexiFile.Application.Commands.FileCommands.CreateFileConvertResult {
 		}
 
 		public async Task Handle(CreateFileConvertResultCommand request, CancellationToken cancellationToken) {
+			var conversion = await _unitOfWork.FileConversionRepository.GetByIdAsync(request.ConversionId) ?? throw new Exception("Failed to find conversion");
+
+			conversion.User.StorageUsed += request.Size;
 			var result = new FileConversionResult {
 				Id = request.FileId,
 				FileConversionId = request.ConversionId,
+				Size = request.Size,
 				Order = request.Order,
 				CreationDate = DateTime.UtcNow
 			};

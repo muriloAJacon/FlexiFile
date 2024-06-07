@@ -49,8 +49,14 @@ public partial class User
     [Precision(3, 0)]
     public DateTime LastUpdateDate { get; set; }
 
+    [Column("storage_used")]
+    public long StorageUsed { get; set; }
+
     [Column("storage_limit")]
     public long? StorageLimit { get; set; }
+
+    [Column("hard_storage_limit")]
+    public long? HardStorageLimit { get; set; }
 
     [ForeignKey("ApprovedByUserId")]
     [InverseProperty("InverseApprovedByUser")]

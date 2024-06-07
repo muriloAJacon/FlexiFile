@@ -16,6 +16,7 @@ namespace FlexiFile.Infrastructure.Repository {
 									   .Include(x => x.FileConversionOrigins.OrderBy(x => x.Order))
 									   .ThenInclude(x => x.File)
 									   .Include(x => x.FileConversionResults.OrderBy(x => x.Order))
+									   .Include(x => x.User)
 									   .FirstOrDefaultAsync(x => x.Id == id);
 		}
 	}

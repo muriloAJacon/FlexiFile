@@ -21,7 +21,10 @@ public partial class FileConversionResult
     [Precision(3, 0)]
     public DateTime CreationDate { get; set; }
 
-    [Column("order")]
+	[Column("size")]
+	public long Size { get; set; }
+
+	[Column("order")]
     public int Order { get; set; }
 
     [ForeignKey("FileConversionId")]

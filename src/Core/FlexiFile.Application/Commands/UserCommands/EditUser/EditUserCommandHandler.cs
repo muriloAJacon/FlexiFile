@@ -24,6 +24,8 @@ namespace FlexiFile.Application.Commands.UserCommands.EditUser {
 			}
 
 			user.Name = request.Name;
+			user.StorageLimit = request.StorageLimit;
+			user.HardStorageLimit = request.HardStorageLimit;
 			user.LastUpdateDate = DateTime.UtcNow;
 
 			if (request.Password is not null) {

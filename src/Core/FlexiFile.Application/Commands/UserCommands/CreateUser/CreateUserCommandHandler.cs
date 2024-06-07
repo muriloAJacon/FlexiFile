@@ -43,6 +43,7 @@ namespace FlexiFile.Application.Commands.UserCommands.CreateUser {
 				Email = request.Email,
 				Password = PasswordService.HashPassword(request.Password),
 				AccessLevel = AccessLevel.User,
+				StorageUsed = 0,
 				CreationDate = DateTime.UtcNow,
 				LastUpdateDate = DateTime.UtcNow,
 			};

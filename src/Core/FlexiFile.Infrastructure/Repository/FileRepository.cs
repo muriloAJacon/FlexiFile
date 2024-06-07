@@ -9,7 +9,8 @@ namespace FlexiFile.Infrastructure.Repository {
 		public FileRepository(PostgresContext context) : base(context) {
 		}
 
-		public async Task<File?> GetUserFileByIdAsync(Guid id, Guid userId) => await Context.Files.Include(x => x.Type)
+		public async Task<File?> GetUserFileByIdAsync(Guid id, Guid userId) => await Context.Files.Include(x => x.OwnedByUser)
+																							.Include(x => x.Type)
 																							.Include(x => x.FileConversionOrigins)
 																							.ThenInclude(x => x.FileConversion)
 																							.ThenInclude(x => x.FileConversionResults)

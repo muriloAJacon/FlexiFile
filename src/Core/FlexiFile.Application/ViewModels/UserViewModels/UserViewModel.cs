@@ -11,5 +11,6 @@ namespace FlexiFile.Application.ViewModels.UserViewModels {
 		public DateTime CreationDate { get; set; }
 		public DateTime LastUpdateDate { get; set; }
 		public long? StorageLimit { get; set; }
+		public long? HardStorageLimit { get; set; }
 	}
 }

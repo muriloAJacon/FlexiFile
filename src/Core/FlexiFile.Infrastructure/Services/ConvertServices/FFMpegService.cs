@@ -5,13 +5,16 @@ using File = System.IO.File;
 using Microsoft.Extensions.Logging;
 using FlexiFile.Core.Events;
 using System.Threading.Channels;
+using FlexiFile.Core.Interfaces.Services;
 
 namespace FlexiFile.Infrastructure.Services.ConvertServices {
 	public class FFMpegService : IConvertVideoService, IConvertAudioService {
 		private readonly ILogger<FFMpegService> _logger;
+		private readonly IValidateUserStorageService _validateUserStorageService;
 
-		public FFMpegService(ILogger<FFMpegService> logger) {
+		public FFMpegService(ILogger<FFMpegService> logger, IValidateUserStorageService validateUserStorageService) {
 			_logger = logger;
+			_validateUserStorageService = validateUserStorageService;
 		}
 
 		public async Task ConvertFile(ChannelWriter<EventArgs> notificationChannelWriter, FileConversion conversion, string fileDirectory, FileType inputFileType, FileType? outputFileType) {
@@ -52,11 +55,19 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 					throw new Exception("Failed to convert file");
 				}
 
+				long fileSize = new FileInfo(tempOutputPath).Length;
+
+				if (!_validateUserStorageService.ValidateStorageForConvertedFile(conversion.User, fileSize)) {
+					File.Delete(tempOutputPath);
+					throw new Exception("User storage exceeded");
+				}
+
 				File.Move(tempOutputPath, outputPath);
 
 				var fileResultEvent = new ConvertFileResultEvent {
 					EventId = Guid.NewGuid(),
 					FileId = outputFileId,
+					Size = fileSize,
 					Order = 1
 				};
 				await notificationChannelWriter.WriteAsync(fileResultEvent);
