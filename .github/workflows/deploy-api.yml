@@ -28,4 +28,4 @@ jobs:
           push: true
           tags: muriloajacon/flexifile-api:dev
           file: src/Adapters/FlexiFile.API/Dockerfile
-          context: ./
+          context: ./src/
