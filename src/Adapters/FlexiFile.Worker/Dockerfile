@@ -6,6 +6,9 @@ WORKDIR /app
 EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+
+RUN apk add --no-cache ffmpeg
+
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Adapters/FlexiFile.Worker/FlexiFile.Worker.csproj", "Adapters/FlexiFile.Worker/"]
