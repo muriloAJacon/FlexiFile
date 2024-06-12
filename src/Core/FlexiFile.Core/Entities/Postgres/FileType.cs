@@ -19,6 +19,9 @@ public partial class FileType
     [Column("mime_type", TypeName = "character varying")]
     public string MimeType { get; set; } = null!;
 
+    [Column("extension", TypeName = "character varying")]
+    public string Extension { get; set; } = null!;
+
     [InverseProperty("FromType")]
     public virtual ICollection<FileTypeConversion> FileTypeConversionFromTypes { get; set; } = new List<FileTypeConversion>();
 
@@ -27,4 +30,7 @@ public partial class FileType
 
     [InverseProperty("Type")]
     public virtual ICollection<File> Files { get; set; } = new List<File>();
+
+    [InverseProperty("Type")]
+    public virtual ICollection<FileConversionResult> FileConversionResults { get; set; } = new List<FileConversionResult>();
 }

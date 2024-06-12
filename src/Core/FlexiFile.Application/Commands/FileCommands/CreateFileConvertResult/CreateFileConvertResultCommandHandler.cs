@@ -16,6 +16,7 @@ namespace FlexiFile.Application.Commands.FileCommands.CreateFileConvertResult {
 			conversion.User.StorageUsed += request.Size;
 			var result = new FileConversionResult {
 				Id = request.FileId,
+				TypeId = request.TypeId,
 				FileConversionId = request.ConversionId,
 				Size = request.Size,
 				Order = request.Order,

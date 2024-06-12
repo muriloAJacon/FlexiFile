@@ -60,6 +60,7 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 				}
 
 				var fileResultEvent = new ConvertFileResultEvent {
+					TypeId = outputFileType.Id,
 					EventId = Guid.NewGuid(),
 					FileId = outputFileId,
 					Size = fileSize,

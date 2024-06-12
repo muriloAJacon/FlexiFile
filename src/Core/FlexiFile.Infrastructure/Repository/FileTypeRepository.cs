@@ -8,6 +8,6 @@ namespace FlexiFile.Infrastructure.Repository {
 		public FileTypeRepository(PostgresContext context) : base(context) {
 		}
 
-		public async Task<FileType?> GetByMimeTypeAsync(string mimeType) => await Context.FileTypes.FirstOrDefaultAsync(x => x.MimeType == mimeType);
+		public async Task<FileType?> GetByMimeTypeAsync(string mimeType) => await Context.FileTypes.AsNoTracking().FirstOrDefaultAsync(x => x.MimeType == mimeType);
 	}
 }

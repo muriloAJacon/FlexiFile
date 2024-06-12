@@ -47,9 +47,9 @@ namespace FlexiFile.API.Controllers {
 
 			string filePath = $"/files/{conversionInfo.FileConversionOrigins.First().File.OwnedByUserId}/{conversionInfo.Id}/{file.Id}";
 
-			string? fileName = download ? file.Id.ToString() : null; // TODO: ADD EXTENSION
+			string? fileName = download ? $"{file.Id}.{file.Type.Extension}" : null;
 
-			string mimeType = conversionInfo.FileTypeConversion.ToType?.MimeType ?? "application/pdf"; // TODO: GET FROM FILE
+			string mimeType = file.Type.MimeType;
 
 			return PhysicalFile(filePath, mimeType, fileName);
 		}
