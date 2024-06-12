@@ -12,6 +12,10 @@ namespace FlexiFile.Infrastructure.Configurations {
 			builder.HasOne(d => d.FileConversion).WithMany(p => p.FileConversionResults)
 				.OnDelete(DeleteBehavior.ClientSetNull)
 				.HasConstraintName("FileConversionResult_FileConversion_id_fk");
+
+			builder.HasOne(d => d.Type).WithMany(p => p.FileConversionResults)
+				.OnDelete(DeleteBehavior.ClientSetNull)
+				.HasConstraintName("FileConversionResult_FileType_id_fk");
 		}
 	}
 }

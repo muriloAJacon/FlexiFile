@@ -10,6 +10,11 @@ namespace FlexiFile.API.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_FileConversionResult_FileType_type_id",
+                schema: "FlexiFile",
+                table: "FileConversionResult");
+
             migrationBuilder.AddColumn<string>(
                 name: "extension",
                 schema: "FlexiFile",
@@ -121,15 +126,39 @@ namespace FlexiFile.API.Migrations
                 keyValue: 13,
                 column: "extension",
                 value: "pdf");
+
+            migrationBuilder.AddForeignKey(
+                name: "FileConversionResult_FileType_id_fk",
+                schema: "FlexiFile",
+                table: "FileConversionResult",
+                column: "type_id",
+                principalSchema: "FlexiFile",
+                principalTable: "FileType",
+                principalColumn: "id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FileConversionResult_FileType_id_fk",
+                schema: "FlexiFile",
+                table: "FileConversionResult");
+
             migrationBuilder.DropColumn(
                 name: "extension",
                 schema: "FlexiFile",
                 table: "FileType");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_FileConversionResult_FileType_type_id",
+                schema: "FlexiFile",
+                table: "FileConversionResult",
+                column: "type_id",
+                principalSchema: "FlexiFile",
+                principalTable: "FileType",
+                principalColumn: "id",
+                onDelete: ReferentialAction.Cascade);
         }
     }
 }

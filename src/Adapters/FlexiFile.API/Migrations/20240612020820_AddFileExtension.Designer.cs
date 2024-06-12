@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FlexiFile.API.Migrations
 {
     [DbContext(typeof(PostgresContext))]
-    [Migration("20240612014719_AddFileExtension")]
+    [Migration("20240612020820_AddFileExtension")]
     partial class AddFileExtension
     {
         /// <inheritdoc />
@@ -1222,8 +1222,8 @@ namespace FlexiFile.API.Migrations
                     b.HasOne("FlexiFile.Core.Entities.Postgres.FileType", "Type")
                         .WithMany("FileConversionResults")
                         .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FileConversionResult_FileType_id_fk");
 
                     b.Navigation("FileConversion");
 
