@@ -98,6 +98,7 @@ namespace FlexiFile.Application.Commands.ConvertCommands.StartConvertCommand {
 			_logger.LogDebug("Reading event {} - file id {} order {}", @event.EventId, @event.FileId, @event.Order);
 
 			await _mediator.Send(new CreateFileConvertResultCommand {
+				TypeId = @event.TypeId,
 				FileId = @event.FileId,
 				ConversionId = conversion.Id,
 				Size = @event.Size,

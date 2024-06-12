@@ -1,5 +1,6 @@
 ﻿using FlexiFile.Core.Entities.Postgres;
 using FlexiFile.Core.Events;
+using FlexiFile.Core.Interfaces.Repository;
 using FlexiFile.Core.Interfaces.Services;
 using FlexiFile.Core.Interfaces.Services.ConvertServices;
 using iText.Kernel.Pdf;
@@ -11,10 +12,12 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 	public class ITextSplitDocumentService : ISplitDocumentService {
 		private readonly ILogger<ITextSplitDocumentService> _logger;
 		private readonly IValidateUserStorageService _validateUserStorageService;
+		private readonly IUnitOfWork _unitOfWork;
 
-		public ITextSplitDocumentService(ILogger<ITextSplitDocumentService> logger, IValidateUserStorageService validateUserStorageService) {
+		public ITextSplitDocumentService(ILogger<ITextSplitDocumentService> logger, IValidateUserStorageService validateUserStorageService, IUnitOfWork unitOfWork) {
 			_logger = logger;
 			_validateUserStorageService = validateUserStorageService;
+			_unitOfWork = unitOfWork;
 		}
 
 		public async Task ConvertFile(ChannelWriter<EventArgs> notificationChannelWriter, FileConversion conversion, string fileDirectory, FileType inputFileType, FileType? outputFileType) {
@@ -35,6 +38,8 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 
 				int pages = separatingPdf.GetNumberOfPages();
 
+				var pdfFileType = await _unitOfWork.FileTypeRepository.GetByMimeTypeAsync("application/pdf") ?? throw new Exception("PDF File Type not found");
+
 				for (int i = 1; i <= pages; i++) {
 					Guid outputFileId = Guid.NewGuid();
 
@@ -52,7 +57,7 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 					}
 
 					var fileResultEvent = new ConvertFileResultEvent {
-						EventId = Guid.NewGuid(),
+						TypeId = pdfFileType.Id,
 						FileId = outputFileId,
 						Size = fileSize,
 						Order = i

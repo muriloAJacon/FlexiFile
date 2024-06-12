@@ -1,5 +1,6 @@
 ﻿using FlexiFile.Core.Entities.Postgres;
 using FlexiFile.Core.Events;
+using FlexiFile.Core.Interfaces.Repository;
 using FlexiFile.Core.Interfaces.Services;
 using FlexiFile.Core.Interfaces.Services.ConvertServices;
 using FlexiFile.Core.Models.ConversionParameters.RearrangeDocument;
@@ -18,10 +19,12 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 	public class ITextRearrangeDocumentService : IRearrangeDocumentService {
 		private readonly ILogger<ITextRearrangeDocumentService> _logger;
 		private readonly IValidateUserStorageService _validateUserStorageService;
+		private readonly IUnitOfWork _unitOfWork;
 
-		public ITextRearrangeDocumentService(ILogger<ITextRearrangeDocumentService> logger, IValidateUserStorageService validateUserStorageService) {
+		public ITextRearrangeDocumentService(ILogger<ITextRearrangeDocumentService> logger, IValidateUserStorageService validateUserStorageService, IUnitOfWork unitOfWork) {
 			_logger = logger;
 			_validateUserStorageService = validateUserStorageService;
+			_unitOfWork = unitOfWork;
 		}
 
 		public async Task ConvertFile(ChannelWriter<EventArgs> notificationChannelWriter, FileConversion conversion, string fileDirectory, FileType inputFileType, FileType? outputFileType) {
@@ -65,7 +68,9 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 					throw new Exception("User storage exceeded");
 				}
 
+				var pdfFileType = await _unitOfWork.FileTypeRepository.GetByMimeTypeAsync("application/pdf") ?? throw new Exception("PDF File Type not found");
 				var fileResultEvent = new ConvertFileResultEvent {
+					TypeId = pdfFileType.Id,
 					EventId = Guid.NewGuid(),
 					FileId = outputFileId,
 					Size = fileSize,

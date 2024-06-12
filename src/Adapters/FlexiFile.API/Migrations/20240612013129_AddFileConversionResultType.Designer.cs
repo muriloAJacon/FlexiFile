@@ -4,6 +4,7 @@ using System.Text.Json;
 using FlexiFile.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FlexiFile.API.Migrations
 {
     [DbContext(typeof(PostgresContext))]
-    partial class PostgresContextModelSnapshot : ModelSnapshot
+    [Migration("20240612013129_AddFileConversionResultType")]
+    partial class AddFileConversionResultType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,11 +203,6 @@ namespace FlexiFile.API.Migrations
                         .HasColumnType("character varying")
                         .HasColumnName("description");
 
-                    b.Property<string>("Extension")
-                        .IsRequired()
-                        .HasColumnType("character varying")
-                        .HasColumnName("extension");
-
                     b.Property<string>("MimeType")
                         .IsRequired()
                         .HasColumnType("character varying")
@@ -220,91 +218,78 @@ namespace FlexiFile.API.Migrations
                         {
                             Id = 1,
                             Description = "PNG",
-                            Extension = "png",
                             MimeType = "image/png"
                         },
                         new
                         {
                             Id = 2,
                             Description = "JPEG",
-                            Extension = "jpeg",
                             MimeType = "image/jpeg"
                         },
                         new
                         {
                             Id = 3,
                             Description = "ICO",
-                            Extension = "ico",
                             MimeType = "image/vnd.microsoft.icon"
                         },
                         new
                         {
                             Id = 4,
                             Description = "SVG",
-                            Extension = "svg",
                             MimeType = "image/svg+xml"
                         },
                         new
                         {
                             Id = 5,
                             Description = "GIF",
-                            Extension = "gif",
                             MimeType = "image/gif"
                         },
                         new
                         {
                             Id = 6,
                             Description = "TIFF",
-                            Extension = "tiff",
                             MimeType = "image/tiff"
                         },
                         new
                         {
                             Id = 7,
                             Description = "MP4",
-                            Extension = "mp4",
                             MimeType = "video/mp4"
                         },
                         new
                         {
                             Id = 8,
                             Description = "MPEG",
-                            Extension = "mpeg",
                             MimeType = "video/mpeg"
                         },
                         new
                         {
                             Id = 9,
                             Description = "WEBM",
-                            Extension = "webm",
                             MimeType = "video/webm"
                         },
                         new
                         {
                             Id = 10,
                             Description = "MKV",
-                            Extension = "mkv",
                             MimeType = "video/x-matroska"
                         },
                         new
                         {
                             Id = 11,
                             Description = "MP3",
-                            Extension = "mp3",
                             MimeType = "audio/mpeg"
                         },
                         new
                         {
                             Id = 12,
                             Description = "M4A",
-                            Extension = "m4a",
                             MimeType = "audio/mp4"
                         },
                         new
                         {
                             Id = 13,
                             Description = "PDF",
-                            Extension = "pdf",
                             MimeType = "application/pdf"
                         });
                 });

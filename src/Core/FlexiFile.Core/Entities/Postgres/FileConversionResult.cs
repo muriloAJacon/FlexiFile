@@ -14,7 +14,10 @@ public partial class FileConversionResult
     [Column("id")]
     public Guid Id { get; set; }
 
-    [Column("file_conversion_id")]
+	[Column("type_id")]
+	public int TypeId { get; set; }
+
+	[Column("file_conversion_id")]
     public Guid FileConversionId { get; set; }
 
     [Column("creation_date")]
@@ -30,4 +33,8 @@ public partial class FileConversionResult
     [ForeignKey("FileConversionId")]
     [InverseProperty("FileConversionResults")]
     public virtual FileConversion FileConversion { get; set; } = null!;
+
+	[ForeignKey("TypeId")]
+	[InverseProperty("FileConversionResults")]
+	public virtual FileType Type { get; set; } = null!;
 }

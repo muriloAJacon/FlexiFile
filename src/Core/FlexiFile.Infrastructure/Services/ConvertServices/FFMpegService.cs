@@ -65,6 +65,7 @@ namespace FlexiFile.Infrastructure.Services.ConvertServices {
 				File.Move(tempOutputPath, outputPath);
 
 				var fileResultEvent = new ConvertFileResultEvent {
+					TypeId = outputFileType.Id,
 					EventId = Guid.NewGuid(),
 					FileId = outputFileId,
 					Size = fileSize,
