@@ -22,7 +22,7 @@ namespace FlexiFile.Application.Commands.FileCommands.CreateFileAuthToken {
 		private readonly FileTokenConfigurations _fileTokenConfigurations = fileTokenConfigurations;
 
 		public async Task<IResultCommand> Handle(CreateFileAuthTokenCommand request, CancellationToken cancellationToken) {
-			string filePath;
+			string filePath, fileName, fileMimeType;
 			switch (request.FileType) {
 				case FileType.OriginalFile:
 					var file = await _unitOfWork.FileRepository.GetUserFileByIdAsync(request.FileId, _userClaimsService.Id);
@@ -30,6 +30,8 @@ namespace FlexiFile.Application.Commands.FileCommands.CreateFileAuthToken {
 						return ResultCommand.BadRequest("File not found", "fileNotFound");
 					}
 					filePath = $"/files/{file.OwnedByUserId}/{file.Id}";
+					fileName = file.OriginalName;
+					fileMimeType = file.Type.MimeType;
 					break;
 				case FileType.ConvertedFile:
 					var convertedFile = await _unitOfWork.FileConversionResultRepository.GetUserFileByIdAsync(request.FileId, _userClaimsService.Id);
@@ -37,12 +39,14 @@ namespace FlexiFile.Application.Commands.FileCommands.CreateFileAuthToken {
 						return ResultCommand.BadRequest("File not found", "fileNotFound");
 					}
 					filePath = $"/files/{convertedFile.FileConversion.UserId}/{convertedFile.FileConversion.Id}/{convertedFile.Id}";
+					fileName = $"{convertedFile.Id}.{convertedFile.Type.Extension}";
+					fileMimeType = convertedFile.Type.MimeType;
 					break;
 				default:
 					throw new NotSupportedException();
 			}
 
-			var token = FileTokenService.GenerateToken(request.FileId, filePath, request.FileType, _fileSigningConfigurations, _fileTokenConfigurations);
+			var token = FileTokenService.GenerateToken(request.FileId, fileName, filePath, fileMimeType, _fileSigningConfigurations, _fileTokenConfigurations);
 
 			return ResultCommand.Ok<FileBearerTokenViewModel, FileBearerTokenViewModel>(token);
 		}

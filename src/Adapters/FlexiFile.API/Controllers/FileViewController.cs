@@ -1,57 +1,55 @@
-﻿using FlexiFile.Core.Interfaces.Repository;
-using FlexiFile.Core.Interfaces.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using FlexiFile.Application.Security.FileAccess;
+using FlexiFile.Application.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace FlexiFile.API.Controllers {
 	[Route("files")]
 	[ApiController]
 	public class FileViewController : ControllerBase {
 
-		private readonly IUnitOfWork _unitOfWork;
-		private readonly IUserClaimsService _userClaimsService;
+		private readonly FileSigningConfigurations _fileSigningConfigurations;
+		private readonly FileTokenConfigurations _fileTokenConfigurations;
 
-		public FileViewController(IUnitOfWork unitOfWork, IUserClaimsService userClaimsService) {
-			_unitOfWork = unitOfWork;
-			_userClaimsService = userClaimsService;
+		public FileViewController(FileSigningConfigurations fileSigningConfigurations, FileTokenConfigurations fileTokenConfigurations) {
+			_fileSigningConfigurations = fileSigningConfigurations;
+			_fileTokenConfigurations = fileTokenConfigurations;
 		}
 
-		[HttpGet("{id:guid}")]
-		public async Task<IActionResult> GetBaseFile(Guid id, [FromQuery] bool download = false) {
-			// TODO: CHECK IF USER HAS ACCESS TO FILE
-			var fileInfo = await _unitOfWork.FileRepository.GetByIdAsync(id);
-			if (fileInfo is null) {
-				return NotFound();
+		[HttpGet("{token}")]
+		public IActionResult GetFile(string token, [FromQuery] bool download = false) {
+			try {
+				var tokenInfo = ValidateToken(token);
+
+				string? fileName = download ? tokenInfo.FileName : null;
+
+				return PhysicalFile(tokenInfo.FilePath, tokenInfo.FileType, fileName);
+			} catch (SecurityTokenValidationException) {
+				return Unauthorized();
 			}
-
-			string filePath = $"/files/{fileInfo.OwnedByUserId}/{fileInfo.Id}";
-
-			string? fileName = download ? fileInfo.OriginalName : null;
-
-			return PhysicalFile(filePath, fileInfo.Type.MimeType, fileName);
 		}
 
-		[HttpGet("{conversionId:guid}/{fileId:guid}")]
-		public async Task<IActionResult> GetConvertedFile(Guid conversionId, Guid fileId, [FromQuery] bool download = false) {
-			// TODO: CHECK IF USER HAS ACCESS TO FILE
-			var conversionInfo = await _unitOfWork.FileConversionRepository.GetByIdAsync(conversionId);
-			if (conversionInfo is null) {
-				return NotFound();
-			}
+		private FileParsedTokenViewModel ValidateToken(string token) {
+			var handler = new JwtSecurityTokenHandler();
+			var validations = new TokenValidationParameters {
+				IssuerSigningKey = _fileSigningConfigurations.Key,
+				ValidAudience = _fileTokenConfigurations.Audience,
+				ValidIssuer = _fileTokenConfigurations.Issuer,
+				ValidateIssuerSigningKey = true,
+				ValidateLifetime = true,
+				ClockSkew = TimeSpan.Zero
+			};
 
-			var file = conversionInfo.FileConversionResults.SingleOrDefault(x => x.Id == fileId);
-			if (file is null) {
-				return NotFound();
-			}
+			var claims = handler.ValidateToken(token, validations, out _);
 
-			string filePath = $"/files/{conversionInfo.FileConversionOrigins.First().File.OwnedByUserId}/{conversionInfo.Id}/{file.Id}";
-
-			string? fileName = download ? $"{file.Id}.{file.Type.Extension}" : null;
-
-			string mimeType = file.Type.MimeType;
-
-			return PhysicalFile(filePath, mimeType, fileName);
+			return new FileParsedTokenViewModel {
+				FileId = Guid.Parse(claims.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value),
+				FileName = claims.Claims.First(x => x.Type == ClaimTypes.Name).Value,
+				FilePath = claims.Claims.First(x => x.Type == ClaimTypes.UserData).Value,
+				FileType = claims.Claims.First(x => x.Type == ClaimTypes.System).Value
+			};
 		}
 	}
 }

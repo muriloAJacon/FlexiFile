@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace FlexiFile.Application.Security.FileAccess {
 	public static class FileTokenService {
-		public static FileBearerTokenViewModel GenerateToken(Guid fileId, string filePath, FileType fileType, FileSigningConfigurations fileSigningConfigurations, FileTokenConfigurations fileTokenConfigurations) {
+		public static FileBearerTokenViewModel GenerateToken(Guid fileId, string fileName, string filePath, string fileMimeType, FileSigningConfigurations fileSigningConfigurations, FileTokenConfigurations fileTokenConfigurations) {
 			DateTime creationDate = DateTime.UtcNow;
 			DateTime expirationDate = creationDate.AddSeconds(fileTokenConfigurations.Seconds);
 
@@ -15,8 +15,9 @@ namespace FlexiFile.Application.Security.FileAccess {
 				Subject = new ClaimsIdentity(new Claim[] {
 					new(ClaimTypes.NameIdentifier, fileId.ToString()),
 					new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
-					new(ClaimTypes.Name, filePath),
-					new(ClaimTypes.UserData, fileType.ToString()),
+					new(ClaimTypes.Name, fileName),
+					new(ClaimTypes.UserData, filePath),
+					new(ClaimTypes.System, fileMimeType),
 				}),
 				Issuer = fileTokenConfigurations.Issuer,
 				Audience = fileTokenConfigurations.Audience,

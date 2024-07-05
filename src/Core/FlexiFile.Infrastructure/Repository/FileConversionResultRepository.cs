@@ -10,6 +10,7 @@ namespace FlexiFile.Infrastructure.Repository {
 
 		public async Task<FileConversionResult?> GetUserFileByIdAsync(Guid id, Guid userId) => await Context.FileConversionResults.Include(x => x.FileConversion)
 																															.ThenInclude(x => x.User)
+																															.Include(x => x.Type)
 																															.FirstOrDefaultAsync(x => x.Id == id && x.FileConversion.UserId == userId);
 	}
 }
