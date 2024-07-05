@@ -6,6 +6,8 @@ import { FileModel } from '../models/file/file-model.model';
 import { ConversionType } from '../models/file-conversion/conversion-type.model';
 import { FileConversionRequest } from '../models/file-conversion/file-conversion-request.model';
 import { FileConversion } from '../models/file-conversion/file-conversion.model';
+import { FileTokenRequest } from '../models/file/file-token-request.model';
+import { FileTokenResponse } from '../models/file/file-token-result.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -47,5 +49,9 @@ export class FileService {
 
 	public convertFile(data: FileConversionRequest) {
 		return this.http.post<FileConversion>(`${this.baseURI}/convert`, data);
+	}
+
+	public getFileToken(fileInfo: FileTokenRequest) {
+		return this.http.post<FileTokenResponse>(`${this.baseURI}/url`, fileInfo);
 	}
 }

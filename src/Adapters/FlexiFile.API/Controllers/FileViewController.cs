@@ -12,10 +12,12 @@ namespace FlexiFile.API.Controllers {
 
 		private readonly FileSigningConfigurations _fileSigningConfigurations;
 		private readonly FileTokenConfigurations _fileTokenConfigurations;
+		private readonly ILogger<FileViewController> _logger;
 
-		public FileViewController(FileSigningConfigurations fileSigningConfigurations, FileTokenConfigurations fileTokenConfigurations) {
+		public FileViewController(FileSigningConfigurations fileSigningConfigurations, FileTokenConfigurations fileTokenConfigurations, ILogger<FileViewController> logger) {
 			_fileSigningConfigurations = fileSigningConfigurations;
 			_fileTokenConfigurations = fileTokenConfigurations;
+			_logger = logger;
 		}
 
 		[HttpGet("{token}")]
@@ -26,8 +28,11 @@ namespace FlexiFile.API.Controllers {
 				string? fileName = download ? tokenInfo.FileName : null;
 
 				return PhysicalFile(tokenInfo.FilePath, tokenInfo.FileType, fileName);
-			} catch (SecurityTokenValidationException) {
+			} catch (SecurityTokenException) {
 				return Unauthorized();
+			} catch (Exception e) {
+				_logger.LogError(e, "Failed to access file");
+				return StatusCode(500);
 			}
 		}
 

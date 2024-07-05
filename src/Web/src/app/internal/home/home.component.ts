@@ -9,6 +9,7 @@ import { FileConversionRequest } from 'src/app/shared/models/file-conversion/fil
 import { FileConversion } from 'src/app/shared/models/file-conversion/file-conversion.model';
 import { ConversionStatus } from 'src/app/shared/models/file/conversion-status.enum';
 import { FileModel } from 'src/app/shared/models/file/file-model.model';
+import { FileType } from 'src/app/shared/models/file/file-type.enum';
 import { InternalFileStatus } from 'src/app/shared/models/file/internal-file-status.enum';
 import { FileService } from 'src/app/shared/services/file.service';
 import { environment } from 'src/environments/environment';
@@ -44,6 +45,8 @@ export class HomeComponent {
 
 	public showOlderFiles = false;
 	public olderFiles: FileModel[] = [];
+
+	public FileType = FileType;
 
 	constructor(
 		private spinnerService: NgxSpinnerService,
@@ -272,6 +275,22 @@ export class HomeComponent {
 				}
 			});
 		}, 1000);
+	}
+
+	openFile(fileId: string, fileType: FileType, download: boolean) {
+		this.spinnerService.show('fileDownload');
+		this.fileService.getFileToken({
+			fileId,
+			fileType
+		}).subscribe({
+			next: (response) => {
+				const url = `${this.baseFilePath}/${response.token}?download=${download}`;
+				window.open(url, '_blank');
+			},
+			error: (error) => {
+				// TODO: HANDLE
+			}
+		}).add(() => this.spinnerService.hide('fileDownload'));
 	}
 }
 

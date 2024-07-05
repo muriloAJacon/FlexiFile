@@ -39,7 +39,7 @@
 
 					<div class="mt-5">
 						<div class="relative w-full min-w-[200px]">
-							<input id="password" class="peer" [ngClass]="form.controls['password'].errors !== null && form.controls['password'].touched ? 'input-invalid' : 'input'" placeholder=" " formControlName="password" type="password" autocomplete="new-password">
+							<input id="password" class="peer" [ngClass]="form.controls['password'].errors !== null && form.controls['password'].touched ? 'input-invalid' : 'input'" placeholder=" " formControlName="password" type="password" autocomplete="current-password">
 
 							<label for="password" [ngClass]="form.controls['password'].errors !== null && form.controls['password'].touched ? 'form-label-invalid' : 'form-label'">
 								Password
