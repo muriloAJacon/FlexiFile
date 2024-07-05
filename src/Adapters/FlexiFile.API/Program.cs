@@ -22,6 +22,8 @@ builder.Host.UseSerilog();
 
 builder.Services.AddBearerAuthentication(builder.Configuration);
 
+builder.Services.AddFileBearerAuthentication(builder.Configuration);
+
 builder.Services.ConfigureCors(builder.Configuration);
 
 builder.Services.AddControllers(ExtensionOptions.ConfigureControllers)

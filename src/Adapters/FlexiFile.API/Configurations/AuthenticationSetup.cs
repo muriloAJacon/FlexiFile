@@ -1,4 +1,5 @@
 ﻿using FlexiFile.Application.Security;
+using FlexiFile.Application.Security.FileAccess;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -30,6 +31,17 @@ namespace FlexiFile.API.Configurations {
 					ClockSkew = TimeSpan.Zero
 				};
 			});
+		}
+
+		public static void AddFileBearerAuthentication(this IServiceCollection services, IConfiguration configuration) {
+			FileSigningConfigurations fileSigningConfigurations = new();
+			services.AddSingleton(fileSigningConfigurations);
+
+			FileTokenConfigurations fileTokenConfigurations = new();
+			new ConfigureFromConfigurationOptions<FileTokenConfigurations>(
+								configuration.GetSection("FileTokenConfigurations"))
+					.Configure(fileTokenConfigurations);
+			services.AddSingleton(fileTokenConfigurations);
 		}
 	}
 }
