@@ -42,7 +42,7 @@ namespace FlexiFile.Application.Commands.FileCommands.StartFileUpload {
 
 			var file = new File {
 				Id = Guid.NewGuid(),
-				Type = type,
+				TypeId = type.Id,
 				OwnedByUserId = _userClaimsService.Id,
 				Size = request.FileSize,
 				OriginalName = request.FileName,

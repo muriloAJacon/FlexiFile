@@ -1,6 +1,8 @@
 <app-navbar></app-navbar>
 
 <section class="flex relative justify-center py-24 px-5 md:px-24 xl:px-36 2xl:px-48 3xl:px-96">
+	<ngx-spinner color="#ffcf66" bdColor="rgba(255,255,255,0.8)" name="fileDownload" [fullScreen]="true"></ngx-spinner>
+
     <div class="container">
         <div class="container flex flex-col items-center">
             <div class="text-center mb-8">
@@ -30,15 +32,15 @@
 				<div class="flex justify-between items-center gap-x-2">
 					<span>{{ getStatusText(file) }}</span>
 
-					<a *ngIf="file.fileModel?.finishedUpload" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + file.fileModel.id" target="_blank">
+					<button (click)="openFile(file.fileModel.id, FileType.OriginalFile, false)" *ngIf="file.fileModel?.finishedUpload" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
 						<fa-icon [icon]="['fas', 'arrow-up-right-from-square']"></fa-icon>
 						<span>Open</span>
-					</a>
+					</button>
 
-					<a *ngIf="file.fileModel?.finishedUpload" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + file.fileModel.id + '?download=true'" target="_blank">
+					<button (click)="openFile(file.fileModel.id, FileType.OriginalFile, true)" *ngIf="file.fileModel?.finishedUpload" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
 						<fa-icon [icon]="['fas', 'download']"></fa-icon>
 						<span>Download</span>
-					</a>
+					</button>
 
 					<button (click)="openConvertModal(file.fileModel)" *ngIf="[InternalFileStatus.Uploading, InternalFileStatus.Complete].includes(file.status)" type="button" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
 						<fa-icon [icon]="['fas', 'shuffle']"></fa-icon>
@@ -73,14 +75,14 @@
 							</ng-container>
 						</div>
 						<div class="flex gap-x-2" *ngIf="conversion.fileResults.length === 1 && conversion.status === ConversionStatus.Completed">
-							<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + conversion.fileResults[0].id" target="_blank">
+							<button (click)="openFile(conversion.fileResults[0].id, FileType.ConvertedFile, false)" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
 								<fa-icon [icon]="['fas', 'arrow-up-right-from-square']"></fa-icon>
 								<span>Open</span>
-							</a>
-							<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + conversion.fileResults[0].id + '?download=true'" target="_blank">
+							</button>
+							<button (click)="openFile(conversion.fileResults[0].id, FileType.ConvertedFile, true)" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
 								<fa-icon [icon]="['fas', 'download']"></fa-icon>
 								<span>Download</span>
-							</a>
+							</button>
 						</div>
 					</div>
 
@@ -89,14 +91,14 @@
 							<span>File #{{ idx + 1 }}</span>
 
 							<div class="flex gap-x-2">
-								<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + result.id" target="_blank">
+								<button (click)="openFile(result.id, FileType.ConvertedFile, false)" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
 									<fa-icon [icon]="['fas', 'arrow-up-right-from-square']"></fa-icon>
 									<span>Open</span>
-								</a>
-								<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + result.id + '?download=true'" target="_blank">
+								</button>
+								<button (click)="openFile(result.id, FileType.ConvertedFile, false)" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
 									<fa-icon [icon]="['fas', 'download']"></fa-icon>
 									<span>Download</span>
-								</a>
+								</button>
 							</div>
 						</div>
 					</div>
@@ -115,15 +117,15 @@
 					<div class="flex justify-between items-center gap-x-2">
 						<span>{{ file.originalName }}</span>
 
-						<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + file.id" target="_blank">
+						<button (click)="openFile(file.id, FileType.OriginalFile, false)" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
 							<fa-icon [icon]="['fas', 'arrow-up-right-from-square']"></fa-icon>
 							<span>Open</span>
-						</a>
+						</button>
 
-						<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + file.id + '?download=true'" target="_blank">
+						<button (click)="openFile(file.id, FileType.OriginalFile, true)" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
 							<fa-icon [icon]="['fas', 'download']"></fa-icon>
 							<span>Download</span>
-						</a>
+						</button>
 
 						<button (click)="openConvertModal(file)" type="button" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
 							<fa-icon [icon]="['fas', 'shuffle']"></fa-icon>
@@ -149,14 +151,14 @@
 								</ng-container>
 							</div>
 							<div class="flex gap-x-2" *ngIf="conversion.fileResults.length === 1 && conversion.status === ConversionStatus.Completed">
-								<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + conversion.fileResults[0].id" target="_blank">
+								<button (click)="openFile(conversion.fileResults[0].id, FileType.ConvertedFile, false)" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
 									<fa-icon [icon]="['fas', 'arrow-up-right-from-square']"></fa-icon>
 									<span>Open</span>
-								</a>
-								<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + conversion.fileResults[0].id + '?download=true'" target="_blank">
+								</button>
+								<button (click)="openFile(conversion.fileResults[0].id, FileType.ConvertedFile, true)" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
 									<fa-icon [icon]="['fas', 'download']"></fa-icon>
 									<span>Download</span>
-								</a>
+								</button>
 							</div>
 						</div>
 
@@ -165,14 +167,14 @@
 								<span>File #{{ idx + 1 }}</span>
 	
 								<div class="flex gap-x-2">
-									<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + result.id" target="_blank">
+									<button (click)="openFile(result.id, FileType.ConvertedFile, false)" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
 										<fa-icon [icon]="['fas', 'arrow-up-right-from-square']"></fa-icon>
 										<span>Open</span>
-									</a>
-									<a class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2" [href]="baseFilePath + '/' + conversion.id + '/' + result.id + '?download=true'" target="_blank">
+									</button>
+									<button (click)="openFile(result.id, FileType.ConvertedFile, false)" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
 										<fa-icon [icon]="['fas', 'download']"></fa-icon>
 										<span>Download</span>
-									</a>
+									</button>
 								</div>
 							</div>
 						</div>

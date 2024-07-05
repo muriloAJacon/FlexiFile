@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using FlexiFile.Application.Commands.ConvertCommands.GetAvailableConversionsCommand;
 using FlexiFile.Application.Commands.ConvertCommands.RequestConvertCommand;
+using FlexiFile.Application.Commands.FileCommands.CreateFileAuthToken;
 using FlexiFile.Application.Commands.FileCommands.FileUpload;
 using FlexiFile.Application.Commands.FileCommands.GetFileInfo;
 using FlexiFile.Application.Commands.FileCommands.GetFiles;
@@ -74,5 +75,11 @@ namespace FlexiFile.API.Controllers.V1 {
 		[ProducesResponseType((int)HttpStatusCode.BadRequest)]
 		[ProducesResponseType((int)HttpStatusCode.Unauthorized)]
 		public async Task<IActionResult> GetAvailableConversions(string mimeType) => await _mediator.Send(new GetAvailableConversionsCommand(HttpUtility.UrlDecode(mimeType)));
+
+		[HttpPost("url")]
+		[ProducesResponseType((int)HttpStatusCode.OK)]
+		[ProducesResponseType((int)HttpStatusCode.BadRequest)]
+		[ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+		public async Task<IActionResult> GetAuthorizationUrl([FromBody] CreateFileAuthTokenCommand command) => await _mediator.Send(command);
 	}
 }
