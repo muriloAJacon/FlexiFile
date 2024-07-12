@@ -88,9 +88,13 @@
 					<ngx-datatable-column name="Actions" [width]="150" [sortable]="false" prop="">
 						<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
 							<div class="flex gap-x-1">
-								<button (click)="grantAccess(row)" *ngIf="!row.approved" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
+								<button (click)="grantAccess(row)" *ngIf="!row.approved" class="button-default bg-gradient-to-tr from-green-600 to-green-400 text-white shadow-green-700/20 hover:shadow-blue-green/40 flex flex-wrap justify-center gap-x-2">
 									<fa-icon [icon]="['fas', 'address-card']"></fa-icon>
 									<span>Grant Access</span>
+								</button>
+								<button (click)="editingUser = row" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
+									<fa-icon [icon]="['fas', 'pencil-alt']"></fa-icon>
+									<span>Edit</span>
 								</button>
 							</div>
 						</ng-template>
@@ -108,3 +112,5 @@
 
 	<app-create-user-form (userCreated)="onUserCreated($event)" [anonymous]="false"></app-create-user-form>
 </app-modal>
+
+<app-edit-user-modal *ngIf="editingUser" [user]="editingUser"></app-edit-user-modal>

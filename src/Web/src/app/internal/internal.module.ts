@@ -11,6 +11,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { DragDropDirective } from './drag-drop/drag-drop.directive';
 import { SettingsComponent } from './settings/settings.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { EditUserModalComponent } from './settings/edit-user-modal/edit-user-modal.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 		HomeComponent,
 		NavbarComponent,
 		DragDropDirective,
-		SettingsComponent
+		SettingsComponent,
+		EditUserModalComponent
 	],
 	imports: [
 		SharedModule,

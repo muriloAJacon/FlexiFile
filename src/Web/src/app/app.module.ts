@@ -50,6 +50,7 @@ export class AppModule {
 			FontAwesomeSolid.faBan,
 			FontAwesomeSolid.faUnlock,
 			FontAwesomeSolid.faUserPlus,
+			FontAwesomeSolid.faPencilAlt,
 		);
 	}
 }

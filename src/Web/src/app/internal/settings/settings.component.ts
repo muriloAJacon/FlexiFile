@@ -41,6 +41,8 @@ export class SettingsComponent {
 		{ value: 1000000000, description: "GB" },
 	];
 
+	public editingUser: User | null = null;
+
 	constructor(
 		private spinnerService: NgxSpinnerService,
 		_formBuilder: FormBuilder,
