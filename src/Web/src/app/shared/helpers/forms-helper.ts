@@ -48,4 +48,23 @@ export class FormsHelper {
 
 		return errors;
 	}
+
+	public static sizeUnits = [
+		{ value: 1, description: "B" },
+		{ value: 1000, description: "KB" },
+		{ value: 1000000, description: "MB" },
+		{ value: 1000000000, description: "GB" },
+	];
+
+	public static getSizeUnit(size: number): { value: number, description: string } {
+		const sizeUnitsCopy = [...this.sizeUnits];
+		sizeUnitsCopy.sort((a, b) => b.value - a.value);
+		for (let i = 0; i < sizeUnitsCopy.length; i++) {
+			if (size % sizeUnitsCopy[i].value !== size) {
+				return sizeUnitsCopy[i];
+			}
+		}
+
+		return sizeUnitsCopy[sizeUnitsCopy.length - 1];
+	}
 }

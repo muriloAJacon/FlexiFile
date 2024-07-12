@@ -11,6 +11,7 @@ import { forkJoin } from 'rxjs';
 import { ChangeGlobalMaxFileSize } from 'src/app/shared/models/settings/change-global-max-file-size.model';
 import { ChangeAllowAnonymousRegister } from 'src/app/shared/models/settings/change-allow-anonymous-register.model';
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
+import { FormsHelper } from 'src/app/shared/helpers/forms-helper';
 
 @Component({
 	selector: 'app-settings',
@@ -34,12 +35,7 @@ export class SettingsComponent {
 
 	public AccessLevel = AccessLevel;
 
-	public sizeUnits = [
-		{ value: 1, description: "B" },
-		{ value: 1000, description: "KB" },
-		{ value: 1000000, description: "MB" },
-		{ value: 1000000000, description: "GB" },
-	];
+	public sizeUnits = FormsHelper.sizeUnits;
 
 	public editingUser: User | null = null;
 
@@ -86,18 +82,12 @@ export class SettingsComponent {
 			next: ([allowAnonymousRegister, maxFileSize]) => {
 				this.allowAnonymousRegisterControl.setValue(allowAnonymousRegister.anonymousRegisterAllowed, { emitEvent: false });
 
-				const sizeUnitsCopy = [...this.sizeUnits];
-				sizeUnitsCopy.sort((a, b) => b.value - a.value);
 				const maxFileSizeNumber = maxFileSize.maxFileSize;
-				for (let i = 0; i < sizeUnitsCopy.length; i++) {
-					if (maxFileSizeNumber % sizeUnitsCopy[i].value !== maxFileSizeNumber) {
-						this.maxFileSizeForm.setValue({
-							sizeNumber: maxFileSizeNumber / sizeUnitsCopy[i].value,
-							sizeUnit: sizeUnitsCopy[i].value
-						});
-						break;
-					}
-				}
+				const sizeUnit = FormsHelper.getSizeUnit(maxFileSizeNumber);
+				this.maxFileSizeForm.setValue({
+					sizeNumber: maxFileSizeNumber / sizeUnit.value,
+					sizeUnit: sizeUnit.value
+				});
 			},
 			error: (error) => {
 				// TODO: HANDLE
@@ -159,5 +149,13 @@ export class SettingsComponent {
 		this.users.unshift(user);
 		this.users = [...this.users];
 		this.newUserModal.close();
+	}
+
+	onUserEdited(user: User) {
+		const userIndex = this.users.findIndex(x => x.id === user.id);
+		if (userIndex !== -1) {
+			this.users[userIndex] = user;
+			this.users = [...this.users];
+		}
 	}
 }

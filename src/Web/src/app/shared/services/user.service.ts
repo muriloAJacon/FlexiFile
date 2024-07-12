@@ -6,6 +6,7 @@ import { CreateFirstSetupRequest } from '../models/user/create-first-setup-reque
 import { CreateUserRequest } from '../models/user/create-user-request.model';
 import { User } from '../models/user/user.model';
 import { ApproveUserRequest } from '../models/user/approve-user-request.model';
+import { EditUserRequest } from '../models/user/edit-user-request.model';
 
 @Injectable({
 	providedIn: 'root'
@@ -34,5 +35,9 @@ export class UserService {
 
 	public approveUser(data: ApproveUserRequest) {
 		return this.http.put<User>(`${this.baseURI}/approve`, data);
+	}
+
+	public editUser(data: EditUserRequest) {
+		return this.http.put<User>(`${this.baseURI}`, data);
 	}
 }

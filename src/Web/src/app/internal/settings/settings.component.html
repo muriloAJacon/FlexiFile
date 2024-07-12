@@ -113,4 +113,4 @@
 	<app-create-user-form (userCreated)="onUserCreated($event)" [anonymous]="false"></app-create-user-form>
 </app-modal>
 
-<app-edit-user-modal *ngIf="editingUser" [user]="editingUser"></app-edit-user-modal>
+<app-edit-user-modal *ngIf="editingUser" [user]="editingUser" (modalClosed)="editingUser = null" (userEdited)="onUserEdited($event)"></app-edit-user-modal>
