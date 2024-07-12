@@ -1,13 +1,9 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { FormsHelper } from 'src/app/shared/helpers/forms-helper';
-import { CreateUserRequest } from 'src/app/shared/models/user/create-user-request.model';
 import { User } from 'src/app/shared/models/user/user.model';
 import { SettingsService } from 'src/app/shared/services/settings.service';
-import { UserService } from 'src/app/shared/services/user.service';
+import { TokenService } from 'src/app/shared/services/token.service';
 
 @Component({
   selector: 'app-register',
@@ -15,53 +11,21 @@ import { UserService } from 'src/app/shared/services/user.service';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-	public form: FormGroup;
 
 	public error: string | null = null;
 
-	public anonymousRegisterAllowed: boolean = false;
-
 	constructor(
-		_formBuilder: FormBuilder,
-		private userService: UserService,
-		private spinnerService: NgxSpinnerService,
 		private router: Router,
-		private settingsService: SettingsService
+		private settingsService: SettingsService,
+		private spinnerService: NgxSpinnerService,
+		private tokenService: TokenService
 	) {
-		this.form = _formBuilder.group({
-			name: [null, Validators.compose([
-				Validators.required,
-				Validators.maxLength(250)
-			])],
-			email: [null, Validators.compose([
-				Validators.required,
-				Validators.email
-			])],
-			password: [null, Validators.compose([
-				Validators.required,
-				FormsHelper.strongPasswordValidator
-			])],
-			confirmPassword: [null, Validators.compose([
-				Validators.required,
-				this.equalPasswordValidator.bind(this)
-			])]
-		});
-	}
-
-	equalPasswordValidator(control: AbstractControl): ValidationErrors | null {
-		if (this.form) {
-			const password = this.form.controls["password"].value;
-			const repeatPassword = control.value;
-
-			if (password !== repeatPassword) {
-				return { notEqual: true };
-			}
-		}
-
-		return null;
 	}
 
 	ngOnInit() {
+		// Force user log out, since this page is intended for anonymous registration, and using it while logged in could lead to unexpected results.
+		this.tokenService.signOut();
+
 		this.loadSettings();
 	}
 
@@ -79,34 +43,12 @@ export class RegisterComponent {
 		}).add(() => this.spinnerService.hide('register'));
 	}
 
-	submit() {
-		this.error = null;
-
-		FormsHelper.markFormAsDirty(this.form);
-		if (!this.form.valid) {
-			return;
-		}
-
-		const controls = this.form.controls;
-
-		const registerData: CreateUserRequest = {
-			name: controls['name'].value,
-			email: controls['email'].value,
-			password: controls['password'].value
-		};
-
-		this.spinnerService.show('register');
-		this.userService.createUser(registerData).subscribe({
-			next: (user: User) => {
-				this.router.navigate(['/login'], {
-					queryParams: {
-						messageCode: user.approved ? 'accountCreated' : 'accountCreatedAwaitingApproval'
-					}
-				});
-			},
-			error: (error: HttpErrorResponse) => {
-				this.error = error.error?.message ?? "Registration failed.";
+	onUserCreated(user: User) {
+		this.router.navigate(['/login'], {
+			queryParams: {
+				messageCode: user.approved ? 'accountCreated' : 'accountCreatedAwaitingApproval'
 			}
-		}).add(() => this.spinnerService.hide('register'));
+		});
 	}
+
 }
