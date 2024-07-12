@@ -49,6 +49,8 @@ export class AppModule {
 			FontAwesomeSolid.faAddressCard,
 			FontAwesomeSolid.faBan,
 			FontAwesomeSolid.faUnlock,
+			FontAwesomeSolid.faUserPlus,
+			FontAwesomeSolid.faPencilAlt,
 		);
 	}
 }

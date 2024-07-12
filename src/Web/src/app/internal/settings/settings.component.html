@@ -66,7 +66,14 @@
 			<div class="card w-[1200px] max-w-full px-5 py-5 mt-5">
 				<ngx-spinner color="#ffcf66" bdColor="rgba(255,255,255,0.8)" name="users" [fullScreen]="false"></ngx-spinner>
 
-				<h2 class="text-xl mb-5">Users</h2>
+				<div class="flex justify-between">
+					<h2 class="text-xl mb-5">Users</h2>
+
+					<button (click)="newUserModal.open()" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40">
+						<fa-icon class="mr-2" [icon]="['fas', 'user-plus']"></fa-icon>
+						<span>Create New User</span>
+					</button>
+				</div>
 
 				<ngx-datatable class="bootstrap" [rows]="users"
 				[columnMode]="columnMode" [headerHeight]="50" [footerHeight]="50" rowHeight="auto" rowWidth="auto" [scrollbarH]="true"
@@ -81,22 +88,14 @@
 					<ngx-datatable-column name="Actions" [width]="150" [sortable]="false" prop="">
 						<ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
 							<div class="flex gap-x-1">
-								<button (click)="grantAccess(row)" *ngIf="!row.approved" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
+								<button (click)="grantAccess(row)" *ngIf="!row.approved" class="button-default bg-gradient-to-tr from-green-600 to-green-400 text-white shadow-green-700/20 hover:shadow-blue-green/40 flex flex-wrap justify-center gap-x-2">
 									<fa-icon [icon]="['fas', 'address-card']"></fa-icon>
 									<span>Grant Access</span>
 								</button>
-
-								<ng-container *ngIf="[AccessLevel.User, AccessLevel.Admin].includes(row.accessLevel)">
-									<button *ngIf="!row.blocked" (click)="changeUserBlock(row, true)" class="button-default bg-gradient-to-tr from-red-600 to-red-400 text-white shadow-red-700/20 hover:shadow-red-700/40 flex flex-wrap justify-center gap-x-2">
-										<fa-icon [icon]="['fas', 'ban']"></fa-icon>
-										<span>Block</span>
-									</button>
-	
-									<button *ngIf="row.blocked" (click)="changeUserBlock(row, false)" class="button-default bg-gradient-to-tr from-green-600 to-green-400 text-white shadow-green-700/20 hover:shadow-green-700/40 flex flex-wrap justify-center gap-x-2">
-										<fa-icon [icon]="['fas', 'unlock']"></fa-icon>
-										<span>Unblock</span>
-									</button>
-								</ng-container>
+								<button (click)="editingUser = row" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40 flex flex-wrap justify-center gap-x-2">
+									<fa-icon [icon]="['fas', 'pencil-alt']"></fa-icon>
+									<span>Edit</span>
+								</button>
 							</div>
 						</ng-template>
 					</ngx-datatable-column>
@@ -105,3 +104,13 @@
         </div>
     </div>
 </section>
+
+<app-modal #newUserModal>
+	<span title>Create a new user</span>
+
+	<ngx-spinner color="#ffcf66" bdColor="rgba(255,255,255,0.8)" name="register" [fullScreen]="false"></ngx-spinner>
+
+	<app-create-user-form (userCreated)="onUserCreated($event)" [anonymous]="false"></app-create-user-form>
+</app-modal>
+
+<app-edit-user-modal *ngIf="editingUser" [user]="editingUser" (modalClosed)="editingUser = null" (userEdited)="onUserEdited($event)"></app-edit-user-modal>

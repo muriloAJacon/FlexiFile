@@ -10,5 +10,5 @@ export interface User {
 	creationDate: string;
 	lastUpdateDate: string;
 	storageLimit: number | null;
-	blocked: boolean;
+	hardStorageLimit: number | null;
 }

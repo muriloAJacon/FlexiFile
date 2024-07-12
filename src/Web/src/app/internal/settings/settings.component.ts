@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -10,6 +10,8 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { forkJoin } from 'rxjs';
 import { ChangeGlobalMaxFileSize } from 'src/app/shared/models/settings/change-global-max-file-size.model';
 import { ChangeAllowAnonymousRegister } from 'src/app/shared/models/settings/change-allow-anonymous-register.model';
+import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
+import { FormsHelper } from 'src/app/shared/helpers/forms-helper';
 
 @Component({
 	selector: 'app-settings',
@@ -17,6 +19,8 @@ import { ChangeAllowAnonymousRegister } from 'src/app/shared/models/settings/cha
 	styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent {
+
+	@ViewChild('newUserModal') newUserModal!: ModalComponent;
 
 	public allowAnonymousRegisterControl: FormControl<boolean>;
 
@@ -31,12 +35,9 @@ export class SettingsComponent {
 
 	public AccessLevel = AccessLevel;
 
-	public sizeUnits = [
-		{ value: 1, description: "B" },
-		{ value: 1000, description: "KB" },
-		{ value: 1000000, description: "MB" },
-		{ value: 1000000000, description: "GB" },
-	];
+	public sizeUnits = FormsHelper.sizeUnits;
+
+	public editingUser: User | null = null;
 
 	constructor(
 		private spinnerService: NgxSpinnerService,
@@ -81,18 +82,12 @@ export class SettingsComponent {
 			next: ([allowAnonymousRegister, maxFileSize]) => {
 				this.allowAnonymousRegisterControl.setValue(allowAnonymousRegister.anonymousRegisterAllowed, { emitEvent: false });
 
-				const sizeUnitsCopy = [...this.sizeUnits];
-				sizeUnitsCopy.sort((a, b) => b.value - a.value);
 				const maxFileSizeNumber = maxFileSize.maxFileSize;
-				for (let i = 0; i < sizeUnitsCopy.length; i++) {
-					if (maxFileSizeNumber % sizeUnitsCopy[i].value !== maxFileSizeNumber) {
-						this.maxFileSizeForm.setValue({
-							sizeNumber: maxFileSizeNumber / sizeUnitsCopy[i].value,
-							sizeUnit: sizeUnitsCopy[i].value
-						});
-						break;
-					}
-				}
+				const sizeUnit = FormsHelper.getSizeUnit(maxFileSizeNumber);
+				this.maxFileSizeForm.setValue({
+					sizeNumber: maxFileSizeNumber / sizeUnit.value,
+					sizeUnit: sizeUnit.value
+				});
 			},
 			error: (error) => {
 				// TODO: HANDLE
@@ -150,13 +145,17 @@ export class SettingsComponent {
 		}).add(() => this.spinnerService.hide('users'));
 	}
 
-	changeUserBlock(user: User, newValue: boolean) {
-		// TODO
-		this.spinnerService.show('users');
-		setTimeout(() => {
-			user.blocked = newValue;
+	onUserCreated(user: User) {
+		this.users.unshift(user);
+		this.users = [...this.users];
+		this.newUserModal.close();
+	}
+
+	onUserEdited(user: User) {
+		const userIndex = this.users.findIndex(x => x.id === user.id);
+		if (userIndex !== -1) {
+			this.users[userIndex] = user;
 			this.users = [...this.users];
-			this.spinnerService.hide('users');
-		}, 1000);
+		}
 	}
 }

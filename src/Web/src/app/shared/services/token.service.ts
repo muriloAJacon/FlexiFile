@@ -63,12 +63,11 @@ export class TokenService {
 		this.cookieService.set(this.USER_INFO, JSON.stringify(userModel), { path: '/', expires: expiration.toJSDate(), sameSite: "Strict", secure: true });
 	}
 
-	canActiveLoggedInRoute(router: Router, state: RouterStateSnapshot): Promise<boolean> | boolean {
+	isLoggedIn(): Promise<boolean> | boolean {
 		if (this.getJwtToken() == null) {
 			const refreshToken = this.getRefreshToken();
 
 			if (refreshToken == null) {
-				router.navigate(["/login"], { queryParams: { "redirect": state.url } });
 				return false;
 			}
 
@@ -83,7 +82,6 @@ export class TokenService {
 						resolve(true);
 					},
 					error: () => {
-						router.navigate(["/login"], { queryParams: { "redirect": state.url } });
 						reject(false);
 					}
 				});
@@ -91,5 +89,28 @@ export class TokenService {
 		}
 
 		return true;
+	}
+
+	canActiveLoggedInRoute(router: Router, state: RouterStateSnapshot): Promise<boolean> | boolean {
+		const isLoggedInResult = this.isLoggedIn();
+		if (typeof isLoggedInResult === "boolean") {
+			if (!isLoggedInResult) {
+				this.handleNotLoggedIn(router, state);
+			}
+			return isLoggedInResult;
+		}
+
+		return new Promise((resolve, reject) => {
+			isLoggedInResult.then(() => {
+				resolve(true);
+			}).catch(() => {
+				this.handleNotLoggedIn(router, state);
+				reject(false);
+			});
+		});
+	}
+
+	private handleNotLoggedIn(router: Router, state: RouterStateSnapshot): void {
+		router.navigate(["/login"], { queryParams: { "redirect": state.url } });
 	}
 }
