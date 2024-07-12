@@ -153,16 +153,6 @@ export class SettingsComponent {
 		}).add(() => this.spinnerService.hide('users'));
 	}
 
-	changeUserBlock(user: User, newValue: boolean) {
-		// TODO
-		this.spinnerService.show('users');
-		setTimeout(() => {
-			user.blocked = newValue;
-			this.users = [...this.users];
-			this.spinnerService.hide('users');
-		}, 1000);
-	}
-
 	onUserCreated(user: User) {
 		this.users.unshift(user);
 		this.users = [...this.users];

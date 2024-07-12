@@ -92,18 +92,6 @@
 									<fa-icon [icon]="['fas', 'address-card']"></fa-icon>
 									<span>Grant Access</span>
 								</button>
-
-								<ng-container *ngIf="[AccessLevel.User, AccessLevel.Admin].includes(row.accessLevel)">
-									<button *ngIf="!row.blocked" (click)="changeUserBlock(row, true)" class="button-default bg-gradient-to-tr from-red-600 to-red-400 text-white shadow-red-700/20 hover:shadow-red-700/40 flex flex-wrap justify-center gap-x-2">
-										<fa-icon [icon]="['fas', 'ban']"></fa-icon>
-										<span>Block</span>
-									</button>
-	
-									<button *ngIf="row.blocked" (click)="changeUserBlock(row, false)" class="button-default bg-gradient-to-tr from-green-600 to-green-400 text-white shadow-green-700/20 hover:shadow-green-700/40 flex flex-wrap justify-center gap-x-2">
-										<fa-icon [icon]="['fas', 'unlock']"></fa-icon>
-										<span>Unblock</span>
-									</button>
-								</ng-container>
 							</div>
 						</ng-template>
 					</ngx-datatable-column>
