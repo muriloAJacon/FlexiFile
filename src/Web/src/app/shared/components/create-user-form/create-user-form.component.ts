@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -8,11 +8,13 @@ import { User } from '../../models/user/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-create-user-form',
+  selector: 'app-create-user-form[anonymous]',
   templateUrl: './create-user-form.component.html',
   styleUrls: ['./create-user-form.component.css']
 })
 export class CreateUserFormComponent {
+
+	@Input('anonymous') anonymous!: boolean;
 
 	@Output() userCreated = new EventEmitter<User>();
 
@@ -77,6 +79,7 @@ export class CreateUserFormComponent {
 		this.spinnerService.show('register');
 		this.userService.createUser(registerData).subscribe({
 			next: (user: User) => {
+				this.form.reset();
 				this.userCreated.emit(user);
 			},
 			error: (error: HttpErrorResponse) => {

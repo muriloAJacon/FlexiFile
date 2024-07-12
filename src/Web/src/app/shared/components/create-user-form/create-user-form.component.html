@@ -68,7 +68,8 @@
 	<div class="flex justify-end mt-5">
 		<button type="submit"
 			class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40">
-			<span>Register</span>
+			<span *ngIf="anonymous">Register</span>
+			<span *ngIf="!anonymous">Create User</span>
 		</button>
 	</div>
 </form>

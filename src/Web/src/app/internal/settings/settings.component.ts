@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ColumnMode } from '@swimlane/ngx-datatable';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -10,6 +10,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { forkJoin } from 'rxjs';
 import { ChangeGlobalMaxFileSize } from 'src/app/shared/models/settings/change-global-max-file-size.model';
 import { ChangeAllowAnonymousRegister } from 'src/app/shared/models/settings/change-allow-anonymous-register.model';
+import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
 
 @Component({
 	selector: 'app-settings',
@@ -17,6 +18,8 @@ import { ChangeAllowAnonymousRegister } from 'src/app/shared/models/settings/cha
 	styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent {
+
+	@ViewChild('newUserModal') newUserModal!: ModalComponent;
 
 	public allowAnonymousRegisterControl: FormControl<boolean>;
 
@@ -158,5 +161,11 @@ export class SettingsComponent {
 			this.users = [...this.users];
 			this.spinnerService.hide('users');
 		}, 1000);
+	}
+
+	onUserCreated(user: User) {
+		this.users.unshift(user);
+		this.users = [...this.users];
+		this.newUserModal.close();
 	}
 }

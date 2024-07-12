@@ -66,7 +66,14 @@
 			<div class="card w-[1200px] max-w-full px-5 py-5 mt-5">
 				<ngx-spinner color="#ffcf66" bdColor="rgba(255,255,255,0.8)" name="users" [fullScreen]="false"></ngx-spinner>
 
-				<h2 class="text-xl mb-5">Users</h2>
+				<div class="flex justify-between">
+					<h2 class="text-xl mb-5">Users</h2>
+
+					<button (click)="newUserModal.open()" class="button-default bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-700/20 hover:shadow-blue-700/40">
+						<fa-icon class="mr-2" [icon]="['fas', 'user-plus']"></fa-icon>
+						<span>Create New User</span>
+					</button>
+				</div>
 
 				<ngx-datatable class="bootstrap" [rows]="users"
 				[columnMode]="columnMode" [headerHeight]="50" [footerHeight]="50" rowHeight="auto" rowWidth="auto" [scrollbarH]="true"
@@ -105,3 +112,11 @@
         </div>
     </div>
 </section>
+
+<app-modal #newUserModal>
+	<span title>Create a new user</span>
+
+	<ngx-spinner color="#ffcf66" bdColor="rgba(255,255,255,0.8)" name="register" [fullScreen]="false"></ngx-spinner>
+
+	<app-create-user-form (userCreated)="onUserCreated($event)" [anonymous]="false"></app-create-user-form>
+</app-modal>

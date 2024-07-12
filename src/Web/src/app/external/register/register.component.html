@@ -17,7 +17,7 @@
 					<app-alert>{{ error }}</app-alert>
 				</div>
 
-				<app-create-user-form (userCreated)="onUserCreated($event)"></app-create-user-form>
+				<app-create-user-form [anonymous]="true" (userCreated)="onUserCreated($event)"></app-create-user-form>
 
 				<div class="mt-2 text-sm">
 					<span>Already have an account? </span>
