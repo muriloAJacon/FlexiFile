@@ -70,11 +70,11 @@ namespace FlexiFile.API.Controllers.V1 {
 		[ProducesResponseType((int)HttpStatusCode.Unauthorized)]
 		public async Task<IActionResult> Convert([FromBody] RequestConvertCommand command) => await _mediator.Send(command);
 
-		[HttpGet("convert/{mimeType}")]
+		[HttpGet("conversions")]
 		[ProducesResponseType((int)HttpStatusCode.OK)]
 		[ProducesResponseType((int)HttpStatusCode.BadRequest)]
 		[ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-		public async Task<IActionResult> GetAvailableConversions(string mimeType) => await _mediator.Send(new GetAvailableConversionsCommand(HttpUtility.UrlDecode(mimeType)));
+		public async Task<IActionResult> GetAvailableConversions([FromQuery] string mimeType) => await _mediator.Send(new GetAvailableConversionsCommand(HttpUtility.UrlDecode(mimeType)));
 
 		[HttpPost("url")]
 		[ProducesResponseType((int)HttpStatusCode.OK)]

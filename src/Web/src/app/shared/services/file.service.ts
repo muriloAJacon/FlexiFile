@@ -44,7 +44,11 @@ export class FileService {
 	}
 
 	public getAvailableConversions(mimeType: string) {
-		return this.http.get<ConversionType[]>(`${this.baseURI}/convert/${encodeURIComponent(mimeType)}`);
+		return this.http.get<ConversionType[]>(`${this.baseURI}/conversions`, {
+			params: {
+				mimeType: encodeURIComponent(mimeType)
+			}
+		});
 	}
 
 	public convertFile(data: FileConversionRequest) {
