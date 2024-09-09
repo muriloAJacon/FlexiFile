@@ -69,7 +69,7 @@
 							<ng-container [ngSwitch]="conversion.status">
 								<span *ngSwitchCase="ConversionStatus.AwaitingQueue">Awaiting queue...</span>
 								<span *ngSwitchCase="ConversionStatus.InQueue">In queue...</span>
-								<span *ngSwitchCase="ConversionStatus.InProgress">Converting... {{ conversion.percentageComplete }}</span>
+								<span *ngSwitchCase="ConversionStatus.InProgress">Converting... {{ conversion.percentageComplete }}%</span>
 								<span *ngSwitchCase="ConversionStatus.Failed">Conversion failed, check the logs for more details</span>
 								<span *ngSwitchCase="ConversionStatus.Completed">Conversion complete</span>
 							</ng-container>
